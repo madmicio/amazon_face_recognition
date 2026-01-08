@@ -1,0 +1,14 @@
+{
+  "domain": "amazon_face_recognition",
+  "name": "Amazon Face Recognition",
+  "version": "1.0.0",
+  "documentation": "https://github.com/madmicio/amazon_face_recognition",
+  "issue_tracker": "https://github.com/madmicio/amazon_face_recognition/issues",
+  "codeowners": ["@madmicio"],
+  "dependencies": [],
+  "requirements": [
+    "boto3>=1.34.0",
+    "Pillow>=9.0.0"
+  ],
+  "iot_class": "cloud_polling"
+}

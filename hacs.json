@@ -1,0 +1,6 @@
+{
+  "name": "Amazon Face Recognition",
+  "content_in_root": false,
+  "domain": "amazon_face_recognition",
+  "render_readme": true
+}

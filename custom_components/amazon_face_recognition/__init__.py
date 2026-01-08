@@ -1,0 +1,2 @@
+"""Amazon Face Recognition integration."""
+
