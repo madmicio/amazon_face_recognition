@@ -578,7 +578,7 @@ class RecognizedPersonSensor(SensorEntity):
         self._last_scan_time_person_found = "no person found from boot"
         self._last_scan_person_found = False
         self._last_scan = []
-        self._last_file = None
+
         self._reset_task = None
 
 
@@ -594,17 +594,14 @@ class RecognizedPersonSensor(SensorEntity):
             "last_time_scan_person_found": self._last_scan_time_person_found,
             "last_scan_time": self._last_scan_time,
             "confidence": self._confidence_details or {},
-            "file": self._last_file,
         }
 
-    async def update_recognized_faces(self, recognized_names, recognized_faces_details, person_found: bool, file: Optional[str] = None):
+    async def update_recognized_faces(self, recognized_names, recognized_faces_details, person_found: bool):
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self._last_scan_time = now
         self._last_scan_person_found = bool(person_found)
         if person_found:
             self._last_scan_time_person_found = now
-            if file is not None:
-                self._last_file = file
 
         if recognized_names:
             self._recognized_names = set(recognized_names)
@@ -618,8 +615,6 @@ class RecognizedPersonSensor(SensorEntity):
             self._recognized_names.clear()
             self._confidence_details = {}
             self._last_scan = []
-            self._last_file = None
-
 
         self.async_write_ha_state()
 
@@ -1311,6 +1306,17 @@ class ObjectDetection(ImageProcessingEntity):
                 face_event_data[SAVED_FILE] = saved_image_path
             self.hass.bus.fire(EVENT_FACE_DETECTED, face_event_data)
 
+        # update sensor
+        if hasattr(self.hass, "recognized_person_sensor"):
+            self.hass.loop.call_soon_threadsafe(
+                self.hass.async_create_task,
+                self.hass.recognized_person_sensor.update_recognized_faces(
+                    list(recognized_names_set),
+                    dict(self._confidence_details),
+                    self._person_found,
+                ),
+            )
+
         _LOGGER.info("Recognized faces: %s", list(recognized_names_set))
 
     # ------------------------------
@@ -1346,7 +1352,6 @@ class ObjectDetection(ImageProcessingEntity):
             "labels": self._labels,
             "recognized_faces": self._faces,
             "persons_with_names": self._person_labels,
-            "file": self._last_file,
         }
 
         if self._save_file_folder:
@@ -1551,24 +1556,7 @@ class ObjectDetection(ImageProcessingEntity):
                 EVENT_UPDATED,
                 {"last_result": last_result, "updated_at": index_data.get("updated_at")},
             )
-        
-        # 6) aggiorna il sensore con il nome file (NO path)
-        if hasattr(self.hass, "recognized_person_sensor"):
-            try:
-                file_name = save_path.name  # solo nome file
-                coro = self.hass.recognized_person_sensor.update_recognized_faces(
-                    recognized_names,
-                    dict(self._confidence_details),
-                    self._person_found,
-                    file=file_name,
-                )
-                self.hass.loop.call_soon_threadsafe(self.hass.async_create_task, coro)
-            except Exception as e:
-                _LOGGER.warning("save_image: failed to update recognized_person_sensor with file: %s", e)
-
 
         # esegui tutto nel main loop di HA
         self.hass.loop.call_soon_threadsafe(_publish)
-
-        return str(save_path)
 
