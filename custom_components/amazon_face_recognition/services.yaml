@@ -1,0 +1,53 @@
+scan:
+  name: Scan
+  description: Esegue la scansione Rekognition sulla camera indicata (snapshot in memoria).
+  fields:
+    entity_id:
+      name: Camera
+      description: Entità camera da cui prendere lo snapshot.
+      required: true
+      selector:
+        entity:
+          domain: camera
+
+index_face:
+  name: Index face
+  description: Indicizza un volto nella collection AWS usando un file locale.
+  fields:
+    file:
+      name: File
+      description: Percorso COMPLETO del file immagine (es. /config/www/.../mattia_01.jpg).
+      required: true
+      selector:
+        text:
+    name:
+      name: Name
+      description: Nome persona da associare al volto (ExternalImageId).
+      required: true
+      selector:
+        text:
+
+delete_face_by_id:
+  name: Delete face by id
+  description: Elimina un volto dalla collection tramite FaceId.
+  fields:
+    face_id:
+      name: Face ID
+      required: true
+      selector:
+        text:
+
+delete_faces_by_name:
+  name: Delete faces by name
+  description: Elimina tutti i volti associati a un nome (ExternalImageId).
+  fields:
+    name:
+      name: Name
+      required: true
+      selector:
+        text:
+
+delete_all_faces:
+  name: Delete all faces
+  description: Elimina tutti i volti dalla collection.
+  fields: {}
