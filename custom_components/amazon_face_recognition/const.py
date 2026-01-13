@@ -93,6 +93,7 @@ DEFAULT_EXCLUDED_OBJECT_LABELS: list[str] = []
 # Extra events (image_processing platform)
 EVENT_OBJECT_DETECTED = f"{DOMAIN}.object_detected"
 EVENT_FACE_DETECTED = f"{DOMAIN}.face_detected"
+EVENT_GALLERY_UPDATED = f"{DOMAIN}.gallery_updated"
 
 # Saved file attribute key used in events
 SAVED_FILE = "saved_file"
@@ -109,3 +110,6 @@ SUPPORTED_REGIONS = [
     "ap-southeast-1", "ap-southeast-2", "ap-northeast-2", "ap-northeast-1",
     "ap-south-1", "sa-east-1",
 ]
+
+WS_GET_GALLERY = f"{DOMAIN}/get_gallery"
+WS_SUBSCRIBE_GALLERY = f"{DOMAIN}/subscribe_gallery"

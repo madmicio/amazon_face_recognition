@@ -14,6 +14,14 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.components.camera import async_get_image
 from homeassistant.components.http import StaticPathConfig
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components import panel_custom
+from .gallery_http import AFRGalleryUploadView, AFRGalleryImageView
+from .gallery_http import AFRGalleryUploadView, AFRGalleryImageView, AFRGalleryManageView
+from .gallery_store import AFRGalleryStore
+
+
+
+
 
 from .const import (
     DOMAIN,
@@ -46,20 +54,30 @@ _KEY_WS = "_ws_registered"
 _KEY_STATIC = "_static_mounted"
 _KEY_SERVICES = "_services_registered"
 _KEY_USAGE_STORE = "usage_store"
+_KEY_PANEL = "_panel_registered"
+
 
 # Containers
 _KEY_CLIENTS = "clients"         # dict[entry_id] -> boto3 rekognition client
 _KEY_PROCESSORS = "processors"   # dict[entry_id] -> AFRProcessor
+_KEY_VIEWS = "_views_registered"
+
 
 
 def _domain_data(hass: HomeAssistant) -> dict:
     """Ensure DOMAIN dict exists and has core keys."""
     data = hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN].setdefault("gallery", {"updated_at": None, "persons": {}})
+
 
     # Public data used by card/websocket
     data.setdefault("last_result", {})
     data.setdefault("index", {"updated_at": None, "items": []})
     data.setdefault("faces_index", {"updated_at": None, "persons": {}})
+    data.setdefault("gallery", {"updated_at": None, "persons": {}})
+    data.setdefault("gallery_store", None)
+    data.setdefault("_gallery_loaded", False)
+
 
     data.setdefault(
         "usage",
@@ -77,6 +95,42 @@ def _domain_data(hass: HomeAssistant) -> dict:
     data.setdefault(_KEY_PROCESSORS, {})
 
     return data
+
+def _register_views_once(hass: HomeAssistant) -> None:
+    data = _domain_data(hass)
+    if data.get(_KEY_VIEWS):
+        return
+
+    hass.http.register_view(AFRGalleryUploadView)
+    hass.http.register_view(AFRGalleryImageView)
+    hass.http.register_view(AFRGalleryManageView)
+
+
+    data[_KEY_VIEWS] = True
+    _LOGGER.debug("AFR gallery HTTP views registered")
+
+
+async def _register_panel_once(hass: HomeAssistant) -> None:
+    data = _domain_data(hass)
+    if data.get(_KEY_PANEL):
+        return
+
+    # assicura static mount (serve il JS del panel)
+    await _mount_static_legacy(hass)
+
+    await panel_custom.async_register_panel(
+        hass,
+        webcomponent_name="afr-panel",
+        frontend_url_path="afr",
+        module_url="/amazon_face_recognition/frontend/afr-panel.js?v=1",
+        sidebar_title="Face Gallery",
+        sidebar_icon="mdi:face-recognition",
+        require_admin=True,
+    )
+
+    data[_KEY_PANEL] = True
+    _LOGGER.debug("AFR panel registered")
+
 
 
 
@@ -131,6 +185,35 @@ def _ensure_usage_store(hass: HomeAssistant) -> None:
 
     data[_KEY_USAGE_STORE] = AFRUsageStore(hass)
     _LOGGER.debug("AFR usage store initialized")
+
+def _ensure_gallery_store(hass: HomeAssistant) -> None:
+    data = _domain_data(hass)
+    if data.get("gallery_store") is not None:
+        return
+    data["gallery_store"] = AFRGalleryStore(hass)
+    _LOGGER.debug("AFR gallery store initialized")
+
+
+async def _load_gallery_once(hass: HomeAssistant) -> None:
+    data = _domain_data(hass)
+    if data.get("_gallery_loaded"):
+        return
+
+    store = data.get("gallery_store")
+    if store is None:
+        data["_gallery_loaded"] = True
+        return
+
+    try:
+        gallery = await store.async_load()
+        if isinstance(gallery, dict):
+            data["gallery"] = gallery
+            _LOGGER.debug("AFR: gallery loaded from storage (%d persons)", len(gallery.get("persons") or {}))
+    except Exception as e:
+        _LOGGER.warning("AFR: gallery load failed: %s", e)
+
+    data["_gallery_loaded"] = True
+
 
 
 def _get_options(entry: ConfigEntry) -> dict:
@@ -349,6 +432,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     await _load_usage_once(hass)
 
     _register_services_once(hass)
+    await _register_panel_once(hass)
+    _register_views_once(hass)
+    _ensure_gallery_store(hass)
+    await _load_gallery_once(hass)
+
+
+
     return True
 
 
@@ -361,7 +451,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _ensure_usage_store(hass)
     await _load_usage_once(hass)
 
+    _ensure_gallery_store(hass)
+    await _load_gallery_once(hass)
+
     _register_services_once(hass)
+    _register_views_once(hass)
+
 
     # Create rekognition client for this entry
     aws_access_key_id = entry.data.get(CONF_AWS_ACCESS_KEY_ID)
@@ -396,6 +491,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Bootstrap ONLY from disk (IMPORTANT: do not call async_refresh_faces_index here)
     await processor.async_bootstrap()
+    await _register_panel_once(hass)
 
     return True
 

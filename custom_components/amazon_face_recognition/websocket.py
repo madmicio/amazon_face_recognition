@@ -7,6 +7,7 @@ import voluptuous as vol
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.components import websocket_api
 
+
 from .const import (
     DOMAIN,
     EVENT_UPDATED,
@@ -16,6 +17,10 @@ from .const import (
     WS_SUBSCRIBE_UPDATES,
     WS_GET_FACES_INDEX,
     WS_SUBSCRIBE_FACES,
+    EVENT_GALLERY_UPDATED,
+    WS_GET_GALLERY,
+    WS_SUBSCRIBE_GALLERY,
+
 )
 
 DEFAULT_INDEX: Dict[str, Any] = {"updated_at": None, "items": []}
@@ -32,6 +37,9 @@ def async_register_websockets(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_subscribe_updates)
     websocket_api.async_register_command(hass, ws_get_faces_index)
     websocket_api.async_register_command(hass, ws_subscribe_faces)
+    websocket_api.async_register_command(hass, ws_get_gallery)
+    websocket_api.async_register_command(hass, ws_subscribe_gallery)
+
 
 
 # -------- Commands --------
@@ -149,3 +157,31 @@ def publish_update(
 
     if payload:
         hass.bus.async_fire(EVENT_UPDATED, payload)
+
+@callback
+def publish_gallery_update(hass: HomeAssistant, gallery: dict) -> None:
+    hass.data[DOMAIN]["gallery"] = gallery
+    hass.bus.async_fire(EVENT_GALLERY_UPDATED, gallery)
+
+@websocket_api.websocket_command(
+    {vol.Required("type"): WS_GET_GALLERY}
+)
+@websocket_api.async_response
+async def ws_get_gallery(hass, connection, msg):
+    connection.send_result(msg["id"], hass.data[DOMAIN].get("gallery"))
+
+@websocket_api.websocket_command(
+    {vol.Required("type"): WS_SUBSCRIBE_GALLERY}
+)
+@websocket_api.async_response
+async def ws_subscribe_gallery(hass, connection, msg):
+    @callback
+    def forward(event):
+        connection.send_message(
+            websocket_api.event_message(msg["id"], event.data)
+        )
+
+    unsub = hass.bus.async_listen(EVENT_GALLERY_UPDATED, forward)
+    connection.send_result(msg["id"], {})
+    connection.subscriptions[msg["id"]] = unsub
+
