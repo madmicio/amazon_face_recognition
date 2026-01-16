@@ -1,0 +1,48 @@
+{
+  "buttons.configure": "Configurar",
+  "buttons.refresh": "Atualizar",
+  "buttons.clear_all": "Limpar tudo",
+  "buttons.delete_person": "Excluir pessoa",
+
+  "tabs.gallery": "Galeria",
+  "tabs.roi": "ROI",
+  "tabs.plates": "Placas",
+
+  "labels.faces_updated": "Rostos atualizados:",
+  "labels.gallery_updated": "Galeria atualizada:",
+
+  "messages.loading": "Carregando...",
+  "messages.no_faces": "Nenhum rosto na coleção.",
+
+  "upload.title": "Enviar fotos de treinamento",
+  "upload.placeholder_name": "Nome da pessoa (ExternalImageId)",
+  "upload.button": "Enviar",
+  "upload.uploading": "Enviando...",
+  "upload.hint": "Salvo em training_cache e indexado no Rekognition.",
+  "upload.success": "Enviado: {name} (image_id: {image_id})",
+
+  "gallery.title": "Galeria (cache local)",
+  "gallery.empty": "Nenhuma imagem na galeria.",
+  "gallery.images_count": "{count} imagem(ns)",
+
+  "roi.no_cameras": "Nenhuma entidade camera.* encontrada no Home Assistant.",
+  "roi.title": "Editor de ROI",
+  "roi.camera": "Câmera",
+  "roi.refresh_image": "Atualizar imagem",
+  "roi.delete_selected": "Excluir ROI selecionada",
+  "roi.instructions": "Arraste no quadro para criar uma ROI. Arraste uma ROI para movê-la. Arraste o canto inferior direito para redimensionar.",
+  "roi.list_title": "ROIs da câmera",
+  "roi.none": "Nenhuma ROI configurada.",
+  "roi.zone": "Zona {n}",
+  "roi.name_optional": "Nome (opcional)",
+
+  "plates.title": "Placas → nomes",
+  "plates.placeholder_plate": "Placa (ex.: DC964JJ)",
+  "plates.placeholder_name": "Nome (ex.: Mattia)",
+  "plates.add": "Adicionar",
+  "plates.remove": "Remover",
+  "plates.none": "Sem mapeamentos placa → nome.",
+  "plates.normalize_hint": "As placas são normalizadas (MAIÚSCULAS, sem espaços/separadores).",
+  "plates.err_plate": "Digite uma placa válida.",
+  "plates.err_name": "Digite um nome para esta placa."
+}

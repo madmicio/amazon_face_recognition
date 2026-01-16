@@ -22,13 +22,9 @@ CONF_AWS_SECRET_ACCESS_KEY = "aws_secret_access_key"
 CONF_REGION_NAME = "region_name"
 CONF_COLLECTION_ID = "collection_id"
 
-# Options keys (step options)
-CONF_SOURCES = "sources"  # list of camera entity_id
+AFR_SCAN_DIRNAME = "amazon_face_recognition_scan"
 
-CONF_ROI_Y_MIN = "roi_y_min"
-CONF_ROI_X_MIN = "roi_x_min"
-CONF_ROI_Y_MAX = "roi_y_max"
-CONF_ROI_X_MAX = "roi_x_max"
+
 CONF_SCALE = "scale"
 
 CONF_SAVE_FILE_FOLDER = "save_file_folder"
@@ -51,6 +47,12 @@ CONF_TARGETS_CONFIDENCE = "targets_confidence"  # dict: label->min_conf
 CONF_EXCLUDE_TARGETS = "exclude_targets"        # list[str]
 CONF_EXCLUDED_OBJECT_LABELS = "excluded_object_labels"  # list[str]
 CONF_LABEL_FONT_LEVEL = "label_font_level"
+CONF_SCAN_CARS = "scan_cars"
+
+# --- Vehicle / Plate scan tuning ---
+CONF_VEHICLE_AREA_ABS_MIN = "vehicle_area_abs_min"
+CONF_MAX_VEHICLES_TO_SCAN = "max_vehicles_to_scan"
+
 
 
 
@@ -60,11 +62,6 @@ CONF_LABEL_FONT_LEVEL = "label_font_level"
 DEFAULT_REGION = "eu-west-1"
 
 DEFAULT_LABEL_FONT_LEVEL = 6
-DEFAULT_ROI_Y_MIN = 0.0
-DEFAULT_ROI_X_MIN = 0.0
-DEFAULT_ROI_Y_MAX = 1.0
-DEFAULT_ROI_X_MAX = 1.0
-
 DEFAULT_SCALE = 1.0
 
 DEFAULT_MAX_SAVED_FILES = 10
@@ -73,7 +70,6 @@ DEFAULT_SAVE_TIMESTAMPED_FILE = False
 DEFAULT_ALWAYS_SAVE_LATEST_FILE = True
 DEFAULT_SHOW_BOXES = True
 
-DEFAULT_LABEL_FONT_SCALE = 0.020
 DEFAULT_MAX_RED_BOXES = 6
 DEFAULT_MIN_RED_BOX_AREA = 0.03
 DEFAULT_MIN_RED_BOX_AREA_PCT = 3
@@ -84,11 +80,14 @@ DEFAULT_DEFAULT_MIN_CONFIDENCE = 10.0
 DEFAULT_TARGETS_CONFIDENCE = {}
 DEFAULT_EXCLUDE_TARGETS = []
 
-FONT_PATH = Path(__file__).resolve().parent / "fonts" / "DejaVuSans.ttf"
 
 
 EXCLUDED_OBJECT_LABELS: list[str] = []
 DEFAULT_EXCLUDED_OBJECT_LABELS: list[str] = []
+
+# --- Vehicle / Plate scan tuning ---
+DEFAULT_VEHICLE_AREA_ABS_MIN = 0.01     # 1% dell'immagine
+DEFAULT_MAX_VEHICLES_TO_SCAN = 6
 
 # Extra events (image_processing platform)
 EVENT_OBJECT_DETECTED = f"{DOMAIN}.object_detected"
@@ -101,6 +100,27 @@ SAVED_FILE = "saved_file"
 # Overlay colors
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
+
+# Vehicles overlay
+FUCHSIA = (255, 0, 255)
+
+# --- Plates (targa -> nome) ---
+EVENT_PLATES_UPDATED = f"{DOMAIN}.plates_updated"
+EVENT_ROI_UPDATED = f"{DOMAIN}.roi_updated"
+
+WS_GET_PLATES = f"{DOMAIN}/get_plates"
+WS_SET_PLATES = f"{DOMAIN}/set_plates"
+WS_SUBSCRIBE_PLATES = f"{DOMAIN}/subscribe_plates"
+
+# ROI (managed via panel + websocket, stored in entry.options['roi_by_camera'])
+WS_GET_ROI = f"{DOMAIN}/get_roi"
+WS_SET_ROI = f"{DOMAIN}/set_roi"
+WS_SUBSCRIBE_ROI = f"{DOMAIN}/subscribe_roi"
+
+# const.py
+AFR_SCAN_DIRNAME = "amazon_face_recognition_scan"
+
+
 
 
 

@@ -20,17 +20,8 @@
     "step": {
       "init": {
         "title": "Opzioni",
-        "description": "Camere + ROI/scale + filtri + salvataggio snapshot.",
+        "description": "Filtri + salvataggio snapshot + overlay + veicoli/targhe.",
         "data": {
-          "sources": "Camere da processare",
-
-          "roi_y_min": "ROI Y min (0..1)",
-          "roi_x_min": "ROI X min (0..1)",
-          "roi_y_max": "ROI Y max (0..1)",
-          "roi_x_max": "ROI X max (0..1)",
-          "scale": "Scale (0.1..1.0)",
-
-          "save_file_folder": "Cartella salvataggio snapshot",
           "max_saved_files": "Numero massimo snapshot",
           "save_file_format": "Formato file (jpg/png)",
           "save_timestamped_file": "Salva file timestamped",
@@ -38,16 +29,20 @@
           "show_boxes": "Disegna box",
           "s3_bucket": "Bucket S3 (opzionale)",
 
-          "label_font_scale": "Scala font label",
+          "label_font_level": "Dimensione font label",
           "max_red_boxes": "Numero massimo box rossi",
-          "min_red_box_area": "Area minima box rossi",
+          "min_red_box_area_pct": "Area minima box rossi (%)",
 
           "default_min_confidence": "Confidenza minima default",
           "targets_confidence": "Confidenza per target (dict: label->min_conf)",
           "exclude_targets": "Target da escludere (lista)",
           "excluded_object_labels": "Label escluse dal summary (lista)",
 
-          "aws_api_cost": "Costo stimato per chiamata AWS"
+          "aws_api_cost": "Costo stimato per chiamata AWS",
+
+          "scan_cars": "Analizza veicoli/targhe",
+          "vehicle_area_abs_min": "Area minima veicolo (%)",
+          "max_vehicles_to_scan": "Max veicoli da analizzare"
         }
       }
     }

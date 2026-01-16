@@ -6,6 +6,7 @@ from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 
+
 from .const import (
     DOMAIN,
     # data
@@ -14,12 +15,6 @@ from .const import (
     CONF_REGION_NAME,
     CONF_COLLECTION_ID,
     # options
-    CONF_SOURCES,
-    CONF_ROI_Y_MIN,
-    CONF_ROI_X_MIN,
-    CONF_ROI_Y_MAX,
-    CONF_ROI_X_MAX,
-    CONF_SCALE,
     CONF_SAVE_FILE_FOLDER,
     CONF_MAX_SAVED_FILES,
     CONF_SAVE_FILE_FORMAT,
@@ -36,16 +31,14 @@ from .const import (
     CONF_EXCLUDE_TARGETS,
     CONF_EXCLUDED_OBJECT_LABELS,
     CONF_LABEL_FONT_LEVEL,
-    DEFAULT_LABEL_FONT_LEVEL,
-
+    CONF_SCAN_CARS,
+    CONF_VEHICLE_AREA_ABS_MIN,
+    CONF_MAX_VEHICLES_TO_SCAN,
+    
     
     # defaults
     DEFAULT_REGION,
-    DEFAULT_ROI_Y_MIN,
-    DEFAULT_ROI_X_MIN,
-    DEFAULT_ROI_Y_MAX,
-    DEFAULT_ROI_X_MAX,
-    DEFAULT_SCALE,
+    DEFAULT_LABEL_FONT_LEVEL,
     DEFAULT_MAX_SAVED_FILES,
     DEFAULT_SAVE_FILE_FORMAT,
     DEFAULT_SAVE_TIMESTAMPED_FILE,
@@ -60,15 +53,9 @@ from .const import (
     DEFAULT_EXCLUDE_TARGETS,
     DEFAULT_EXCLUDED_OBJECT_LABELS,
     SUPPORTED_REGIONS,
+    DEFAULT_VEHICLE_AREA_ABS_MIN,
+    DEFAULT_MAX_VEHICLES_TO_SCAN,
 )
-
-
-def _clamp01(v: float) -> float:
-    try:
-        v = float(v)
-    except Exception:
-        v = 0.0
-    return max(0.0, min(1.0, v))
 
 
 def _to_list_of_str(v) -> list[str]:
@@ -93,21 +80,6 @@ def _to_dict(v) -> dict:
     """Normalize UI value into dict."""
     return v if isinstance(v, dict) else {}
 
-
-def _normalize_sources(v) -> list[str]:
-    """Normalize camera entity list."""
-    if v is None:
-        return []
-    if isinstance(v, str):
-        v = [v]
-    if isinstance(v, list):
-        out = []
-        for x in v:
-            s = str(x).strip()
-            if s:
-                out.append(s)
-        return out
-    return []
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -150,23 +122,14 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None):
         opt = dict(self.config_entry.options or {})
 
-        # Normalize existing options (so defaults shown in UI are consistent)
-        opt[CONF_SOURCES] = _normalize_sources(opt.get(CONF_SOURCES, []))
-
         # IMPORTANT: default excluded labels is EMPTY list
         # If key is missing, show DEFAULT_EXCLUDED_OBJECT_LABELS (should be [])
         if CONF_EXCLUDED_OBJECT_LABELS not in opt:
             opt[CONF_EXCLUDED_OBJECT_LABELS] = list(DEFAULT_EXCLUDED_OBJECT_LABELS or [])
 
         if user_input is not None:
-            # --- normalize & enforce keys even when empty ---
-            user_input[CONF_SOURCES] = _normalize_sources(user_input.get(CONF_SOURCES, opt.get(CONF_SOURCES, [])))
 
-            # ROI clamp
-            user_input[CONF_ROI_Y_MIN] = _clamp01(user_input.get(CONF_ROI_Y_MIN, opt.get(CONF_ROI_Y_MIN, DEFAULT_ROI_Y_MIN)))
-            user_input[CONF_ROI_X_MIN] = _clamp01(user_input.get(CONF_ROI_X_MIN, opt.get(CONF_ROI_X_MIN, DEFAULT_ROI_X_MIN)))
-            user_input[CONF_ROI_Y_MAX] = _clamp01(user_input.get(CONF_ROI_Y_MAX, opt.get(CONF_ROI_Y_MAX, DEFAULT_ROI_Y_MAX)))
-            user_input[CONF_ROI_X_MAX] = _clamp01(user_input.get(CONF_ROI_X_MAX, opt.get(CONF_ROI_X_MAX, DEFAULT_ROI_X_MAX)))
+            user_input.pop(CONF_SAVE_FILE_FOLDER, None)
 
             # Ensure list fields are always present (even when empty)
             user_input[CONF_EXCLUDE_TARGETS] = _to_list_of_str(user_input.get(CONF_EXCLUDE_TARGETS))
@@ -197,28 +160,29 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             pct_i = max(1, min(100, pct_i))
             user_input[CONF_MIN_RED_BOX_AREA] = pct_i / 100.0
 
+            # --- Vehicle scan absolute area (% UI -> float 0..1) ---
+            try:
+                abs_pct = int(user_input.pop(CONF_VEHICLE_AREA_ABS_MIN))
+            except Exception:
+                abs_pct = int(DEFAULT_VEHICLE_AREA_ABS_MIN * 100)
+
+            abs_pct = max(1, min(100, abs_pct))
+            user_input[CONF_VEHICLE_AREA_ABS_MIN] = abs_pct / 100.0
+
+            # max vehicles to scan (largest first)
+            user_input[CONF_MAX_VEHICLES_TO_SCAN] = int(
+                user_input.get(CONF_MAX_VEHICLES_TO_SCAN, DEFAULT_MAX_VEHICLES_TO_SCAN)
+            )
+
+            # rimuovi chiavi obsolete
+            user_input.pop("sources", None)
 
             return self.async_create_entry(title="", data=user_input)
 
         schema = vol.Schema(
             {
-                # Cameras
-                vol.Optional(
-                    CONF_SOURCES,
-                    default=opt.get(CONF_SOURCES, []),
-                ): selector.selector({"entity": {"domain": "camera", "multiple": True}}),
-
-                # ROI / Scale
-                vol.Optional(CONF_ROI_Y_MIN, default=opt.get(CONF_ROI_Y_MIN, DEFAULT_ROI_Y_MIN)): vol.Coerce(float),
-                vol.Optional(CONF_ROI_X_MIN, default=opt.get(CONF_ROI_X_MIN, DEFAULT_ROI_X_MIN)): vol.Coerce(float),
-                vol.Optional(CONF_ROI_Y_MAX, default=opt.get(CONF_ROI_Y_MAX, DEFAULT_ROI_Y_MAX)): vol.Coerce(float),
-                vol.Optional(CONF_ROI_X_MAX, default=opt.get(CONF_ROI_X_MAX, DEFAULT_ROI_X_MAX)): vol.Coerce(float),
-                vol.Optional(CONF_SCALE, default=opt.get(CONF_SCALE, DEFAULT_SCALE)): vol.All(
-                    vol.Coerce(float), vol.Range(min=0.1, max=1.0)
-                ),
 
                 # Saving
-                vol.Optional(CONF_SAVE_FILE_FOLDER, default=opt.get(CONF_SAVE_FILE_FOLDER, "/config/www/snapshots/")): str,
                 vol.Optional(CONF_MAX_SAVED_FILES, default=opt.get(CONF_MAX_SAVED_FILES, DEFAULT_MAX_SAVED_FILES)): vol.All(
                     vol.Coerce(int), vol.Range(min=1, max=500)
                 ),
@@ -291,6 +255,42 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Optional(CONF_AWS_API_COST, default=opt.get(CONF_AWS_API_COST, DEFAULT_AWS_API_COST)): vol.All(
                     vol.Coerce(float), vol.Range(min=0.0, max=1.0)
                 ),
+                vol.Optional(
+                    CONF_SCAN_CARS,
+                    default=opt.get(CONF_SCAN_CARS, False),
+                ): selector.BooleanSelector(),
+
+
+                # -------------------------------------------------
+                # Vehicle / Plate scan tuning (ABSOLUTE area only)
+                # -------------------------------------------------
+                vol.Optional(
+                    CONF_VEHICLE_AREA_ABS_MIN,
+                    default=int(
+                        round(
+                            100
+                            * float(opt.get(CONF_VEHICLE_AREA_ABS_MIN, DEFAULT_VEHICLE_AREA_ABS_MIN))
+                        )
+                    ),
+                ): selector.NumberSelector(
+                    selector.NumberSelectorConfig(
+                        min=1,
+                        max=50,
+                        step=1,
+                        mode=selector.NumberSelectorMode.SLIDER,
+                        unit_of_measurement="%",
+                    )
+                ),
+
+                vol.Optional(
+                    CONF_MAX_VEHICLES_TO_SCAN,
+                    default=opt.get(CONF_MAX_VEHICLES_TO_SCAN, DEFAULT_MAX_VEHICLES_TO_SCAN),
+                ): vol.All(
+                    vol.Coerce(int), vol.Range(min=1, max=20)
+                ),
+
+
+
 
             }
         )

@@ -1,0 +1,48 @@
+{
+  "buttons.configure": "Configure",
+  "buttons.refresh": "Refresh",
+  "buttons.clear_all": "Clear all",
+  "buttons.delete_person": "Delete person",
+
+  "tabs.gallery": "Gallery",
+  "tabs.roi": "ROI",
+  "tabs.plates": "Plates",
+
+  "labels.faces_updated": "Faces updated:",
+  "labels.gallery_updated": "Gallery updated:",
+
+  "messages.loading": "Loading...",
+  "messages.no_faces": "No faces in collection.",
+
+  "upload.title": "Upload training photos",
+  "upload.placeholder_name": "Person name (ExternalImageId)",
+  "upload.button": "Upload",
+  "upload.uploading": "Uploading...",
+  "upload.hint": "Saved into training_cache and indexed in Rekognition.",
+  "upload.success": "Uploaded: {name} (image_id: {image_id})",
+
+  "gallery.title": "Gallery (local cache)",
+  "gallery.empty": "No images in gallery.",
+  "gallery.images_count": "{count} image(s)",
+
+  "roi.no_cameras": "No camera.* entities found in Home Assistant.",
+  "roi.title": "ROI Editor",
+  "roi.camera": "Camera",
+  "roi.refresh_image": "Refresh image",
+  "roi.delete_selected": "Delete selected ROI",
+  "roi.instructions": "Drag on the frame to create an ROI. Drag an ROI to move it. Drag the bottom-right corner to resize.",
+  "roi.list_title": "Camera ROIs",
+  "roi.none": "No ROI configured.",
+  "roi.zone": "Zone {n}",
+  "roi.name_optional": "Name (optional)",
+
+  "plates.title": "Plates \u2192 names",
+  "plates.placeholder_plate": "Plate (e.g., DC964JJ)",
+  "plates.placeholder_name": "Name (e.g., Mattia)",
+  "plates.add": "Add",
+  "plates.remove": "Remove",
+  "plates.none": "No plate \u2192 name mappings.",
+  "plates.normalize_hint": "Plates are normalized (UPPERCASE, no spaces/separators).",
+  "plates.err_plate": "Enter a valid plate.",
+  "plates.err_name": "Enter a name for this plate."
+}

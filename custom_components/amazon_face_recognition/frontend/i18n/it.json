@@ -1,0 +1,48 @@
+{
+  "buttons.configure": "Configura",
+  "buttons.refresh": "Aggiorna",
+  "buttons.clear_all": "Svuota tutto",
+  "buttons.delete_person": "Elimina persona",
+
+  "tabs.gallery": "Galleria",
+  "tabs.roi": "ROI",
+  "tabs.plates": "Targhe",
+
+  "labels.faces_updated": "Volti aggiornati:",
+  "labels.gallery_updated": "Galleria aggiornata:",
+
+  "messages.loading": "Caricamento...",
+  "messages.no_faces": "Nessun volto nella raccolta.",
+
+  "upload.title": "Carica foto di training",
+  "upload.placeholder_name": "Nome persona (ExternalImageId)",
+  "upload.button": "Carica",
+  "upload.uploading": "Caricamento...",
+  "upload.hint": "Salvato in training_cache e indicizzato in Rekognition.",
+  "upload.success": "Caricato: {name} (image_id: {image_id})",
+
+  "gallery.title": "Galleria (cache locale)",
+  "gallery.empty": "Nessuna immagine in galleria.",
+  "gallery.images_count": "{count} immagine/i",
+
+  "roi.no_cameras": "Nessuna entità camera.* trovata in Home Assistant.",
+  "roi.title": "Editor ROI",
+  "roi.camera": "Telecamera",
+  "roi.refresh_image": "Aggiorna immagine",
+  "roi.delete_selected": "Elimina ROI selezionata",
+  "roi.instructions": "Trascina sul frame per creare una ROI. Trascina una ROI per spostarla. Trascina l'angolo in basso a destra per ridimensionarla.",
+  "roi.list_title": "ROI della telecamera",
+  "roi.none": "Nessuna ROI configurata.",
+  "roi.zone": "Zona {n}",
+  "roi.name_optional": "Nome (opzionale)",
+
+  "plates.title": "Targhe → nomi",
+  "plates.placeholder_plate": "Targa (es. DC964JJ)",
+  "plates.placeholder_name": "Nome (es. Mattia)",
+  "plates.add": "Aggiungi",
+  "plates.remove": "Rimuovi",
+  "plates.none": "Nessuna associazione targa → nome.",
+  "plates.normalize_hint": "Le targhe vengono normalizzate (MAIUSCOLO, senza spazi/separatori).",
+  "plates.err_plate": "Inserisci una targa valida.",
+  "plates.err_name": "Inserisci un nome per questa targa."
+}

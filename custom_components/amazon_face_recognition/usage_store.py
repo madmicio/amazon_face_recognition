@@ -1,4 +1,3 @@
-# custom_components/amazon_face_recognition/usage_store.py
 from __future__ import annotations
 
 import datetime

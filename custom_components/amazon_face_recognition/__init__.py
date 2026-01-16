@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Optional, Tuple
 
 import boto3
 import voluptuous as vol
@@ -15,10 +15,10 @@ from homeassistant.components.camera import async_get_image
 from homeassistant.components.http import StaticPathConfig
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components import panel_custom
-from .gallery_http import AFRGalleryUploadView, AFRGalleryImageView
 from .gallery_http import AFRGalleryUploadView, AFRGalleryImageView, AFRGalleryManageView
 from .gallery_store import AFRGalleryStore
-
+from .plates_store import AFRPlatesStore
+from homeassistant.helpers.event import async_call_later
 
 
 
@@ -29,6 +29,7 @@ from .const import (
     CONF_AWS_SECRET_ACCESS_KEY,
     CONF_REGION_NAME,
     CONF_COLLECTION_ID,
+    AFR_SCAN_DIRNAME,
 )
 from .processor import AFRProcessor
 from .websocket import async_register_websockets
@@ -51,7 +52,6 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 # Flags in hass.data[DOMAIN]
 _KEY_WS = "_ws_registered"
-_KEY_STATIC = "_static_mounted"
 _KEY_SERVICES = "_services_registered"
 _KEY_USAGE_STORE = "usage_store"
 _KEY_PANEL = "_panel_registered"
@@ -77,6 +77,10 @@ def _domain_data(hass: HomeAssistant) -> dict:
     data.setdefault("gallery", {"updated_at": None, "persons": {}})
     data.setdefault("gallery_store", None)
     data.setdefault("_gallery_loaded", False)
+    data.setdefault("plates", {"updated_at": None, "items": {}})
+    data.setdefault("plates_store", None)
+    data.setdefault("_plates_loaded", False)
+
 
 
     data.setdefault(
@@ -122,8 +126,8 @@ async def _register_panel_once(hass: HomeAssistant) -> None:
         hass,
         webcomponent_name="afr-panel",
         frontend_url_path="afr",
-        module_url="/amazon_face_recognition/frontend/afr-panel.js?v=1",
-        sidebar_title="Face Gallery",
+        module_url="/amazon_face_recognition/frontend/afr-panel.js?v=2",
+        sidebar_title="Recognition Center",
         sidebar_icon="mdi:face-recognition",
         require_admin=True,
     )
@@ -213,6 +217,35 @@ async def _load_gallery_once(hass: HomeAssistant) -> None:
         _LOGGER.warning("AFR: gallery load failed: %s", e)
 
     data["_gallery_loaded"] = True
+
+def _ensure_plates_store(hass: HomeAssistant) -> None:
+    data = _domain_data(hass)
+    if data.get("plates_store") is not None:
+        return
+    data["plates_store"] = AFRPlatesStore(hass)
+    _LOGGER.debug("AFR plates store initialized")
+
+
+async def _load_plates_once(hass: HomeAssistant) -> None:
+    data = _domain_data(hass)
+    if data.get("_plates_loaded"):
+        return
+
+    store = data.get("plates_store")
+    if store is None:
+        data["_plates_loaded"] = True
+        return
+
+    try:
+        plates = await store.async_load()
+        if isinstance(plates, dict):
+            data["plates"] = plates
+            _LOGGER.debug("AFR: plates loaded from storage (%d items)", len(plates.get("items") or {}))
+    except Exception as e:
+        _LOGGER.warning("AFR: plates load failed: %s", e)
+
+    data["_plates_loaded"] = True
+
 
 
 
@@ -334,42 +367,42 @@ def _register_services_once(hass: HomeAssistant) -> None:
         vol.Schema({vol.Optional("entry_id"): cv.string}),
     )
 
-    hass.services.async_register(
-        DOMAIN,
-        "index_face",
-        _svc_index_face,
-        vol.Schema(
-            {
-                vol.Required("name"): cv.string,
-                vol.Required("file"): cv.string,
-                vol.Optional("entry_id"): cv.string,
-            }
-        ),
-    )
+    # hass.services.async_register(
+    #     DOMAIN,
+    #     "index_face",
+    #     _svc_index_face,
+    #     vol.Schema(
+    #         {
+    #             vol.Required("name"): cv.string,
+    #             vol.Required("file"): cv.string,
+    #             vol.Optional("entry_id"): cv.string,
+    #         }
+    #     ),
+    # )
 
-    hass.services.async_register(
-        DOMAIN,
-        "delete_face_by_id",
-        _svc_delete_face_by_id,
-        vol.Schema(
-            {
-                vol.Required("face_id"): cv.string,
-                vol.Optional("entry_id"): cv.string,
-            }
-        ),
-    )
+    # hass.services.async_register(
+    #     DOMAIN,
+    #     "delete_face_by_id",
+    #     _svc_delete_face_by_id,
+    #     vol.Schema(
+    #         {
+    #             vol.Required("face_id"): cv.string,
+    #             vol.Optional("entry_id"): cv.string,
+    #         }
+    #     ),
+    # )
 
-    hass.services.async_register(
-        DOMAIN,
-        "delete_faces_by_name",
-        _svc_delete_faces_by_name,
-        vol.Schema(
-            {
-                vol.Required("name"): cv.string,
-                vol.Optional("entry_id"): cv.string,
-            }
-        ),
-    )
+    # hass.services.async_register(
+    #     DOMAIN,
+    #     "delete_faces_by_name",
+    #     _svc_delete_faces_by_name,
+    #     vol.Schema(
+    #         {
+    #             vol.Required("name"): cv.string,
+    #             vol.Optional("entry_id"): cv.string,
+    #         }
+    #     ),
+    # )
 
     hass.services.async_register(
         DOMAIN,
@@ -428,14 +461,21 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         _LOGGER.error("AFR auto-load card failed: %s", e)
 
     _register_ws_once(hass)
+
     _ensure_usage_store(hass)
     await _load_usage_once(hass)
 
     _register_services_once(hass)
     await _register_panel_once(hass)
+
     _register_views_once(hass)
+
     _ensure_gallery_store(hass)
     await _load_gallery_once(hass)
+
+    _ensure_plates_store(hass)
+    await _load_plates_once(hass)
+
 
 
 
@@ -457,26 +497,34 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _register_services_once(hass)
     _register_views_once(hass)
 
+    _ensure_plates_store(hass)
+    await _load_plates_once(hass)
+
+
 
     # Create rekognition client for this entry
     aws_access_key_id = entry.data.get(CONF_AWS_ACCESS_KEY_ID)
     aws_secret_access_key = entry.data.get(CONF_AWS_SECRET_ACCESS_KEY)
     region_name = entry.data.get(CONF_REGION_NAME)
     collection_id = entry.data.get(CONF_COLLECTION_ID)
+    
 
     try:
-        client = boto3.client(
-            "rekognition",
-            aws_access_key_id=aws_access_key_id,
-            aws_secret_access_key=aws_secret_access_key,
-            region_name=region_name,
+        client = await hass.async_add_executor_job(
+            _create_rekognition_client_sync,
+            aws_access_key_id,
+            aws_secret_access_key,
+            region_name,
         )
     except Exception as e:
         _LOGGER.error("%s: cannot create rekognition client: %s", DOMAIN, e)
         return False
 
+
     # Create processor
     options = _get_options(entry)
+    data["options"] = options  # meglio usare data = _domain_data(hass)
+
     processor = AFRProcessor(hass, client, collection_id, options)
 
     data[_KEY_CLIENTS][entry.entry_id] = client
@@ -489,11 +537,36 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Platforms
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
+    async def _initial_faces_refresh(_now):
+        try:
+            processor.update_options(_get_options(entry))
+            await processor.async_refresh_faces_index()
+        except Exception as err:
+            _LOGGER.warning(
+                "Initial faces index refresh failed: %s", err
+            )
+
+    async_call_later(hass, 5, _initial_faces_refresh)
+
+    # __init__.py -> async_setup_entry (prima di bootstrap)
+    scan_dir = Path(hass.config.path("www", AFR_SCAN_DIRNAME))
+    scan_dir.mkdir(parents=True, exist_ok=True)
+
     # Bootstrap ONLY from disk (IMPORTANT: do not call async_refresh_faces_index here)
     await processor.async_bootstrap()
     await _register_panel_once(hass)
 
     return True
+
+def _create_rekognition_client_sync(aws_access_key_id: str, aws_secret_access_key: str, region_name: str):
+    # Questa funzione gira in executor -> ok fare I/O sync qui
+    return boto3.client(
+        "rekognition",
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        region_name=region_name,
+    )
+
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

@@ -1,6 +1,7 @@
 # custom_components/amazon_face_recognition/rekognition_services.py
 from __future__ import annotations
 
+
 import logging
 from typing import Optional
 

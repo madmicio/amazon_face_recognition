@@ -1,0 +1,48 @@
+{
+  "buttons.configure": "Configurar",
+  "buttons.refresh": "Actualizar",
+  "buttons.clear_all": "Borrar todo",
+  "buttons.delete_person": "Eliminar persona",
+
+  "tabs.gallery": "Galería",
+  "tabs.roi": "ROI",
+  "tabs.plates": "Matrículas",
+
+  "labels.faces_updated": "Rostros actualizados:",
+  "labels.gallery_updated": "Galería actualizada:",
+
+  "messages.loading": "Cargando...",
+  "messages.no_faces": "No hay rostros en la colección.",
+
+  "upload.title": "Subir fotos de entrenamiento",
+  "upload.placeholder_name": "Nombre de la persona (ExternalImageId)",
+  "upload.button": "Subir",
+  "upload.uploading": "Subiendo...",
+  "upload.hint": "Guardado en training_cache e indexado en Rekognition.",
+  "upload.success": "Subido: {name} (image_id: {image_id})",
+
+  "gallery.title": "Galería (caché local)",
+  "gallery.empty": "No hay imágenes en la galería.",
+  "gallery.images_count": "{count} imagen(es)",
+
+  "roi.no_cameras": "No se encontraron entidades camera.* en Home Assistant.",
+  "roi.title": "Editor de ROI",
+  "roi.camera": "Cámara",
+  "roi.refresh_image": "Actualizar imagen",
+  "roi.delete_selected": "Eliminar ROI seleccionada",
+  "roi.instructions": "Arrastra sobre el fotograma para crear una ROI. Arrastra una ROI para moverla. Arrastra la esquina inferior derecha para cambiar el tamaño.",
+  "roi.list_title": "ROIs de la cámara",
+  "roi.none": "Ninguna ROI configurada.",
+  "roi.zone": "Zona {n}",
+  "roi.name_optional": "Nombre (opcional)",
+
+  "plates.title": "Matrículas → nombres",
+  "plates.placeholder_plate": "Matrícula (p. ej., DC964JJ)",
+  "plates.placeholder_name": "Nombre (p. ej., Mattia)",
+  "plates.add": "Añadir",
+  "plates.remove": "Quitar",
+  "plates.none": "No hay asignaciones matrícula → nombre.",
+  "plates.normalize_hint": "Las matrículas se normalizan (MAYÚSCULAS, sin espacios/separadores).",
+  "plates.err_plate": "Introduce una matrícula válida.",
+  "plates.err_name": "Introduce un nombre para esta matrícula."
+}

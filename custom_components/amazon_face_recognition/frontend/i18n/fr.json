@@ -1,0 +1,48 @@
+{
+  "buttons.configure": "Configurer",
+  "buttons.refresh": "Rafraîchir",
+  "buttons.clear_all": "Tout effacer",
+  "buttons.delete_person": "Supprimer la personne",
+
+  "tabs.gallery": "Galerie",
+  "tabs.roi": "ROI",
+  "tabs.plates": "Plaques",
+
+  "labels.faces_updated": "Visages mis à jour :",
+  "labels.gallery_updated": "Galerie mise à jour :",
+
+  "messages.loading": "Chargement...",
+  "messages.no_faces": "Aucun visage dans la collection.",
+
+  "upload.title": "Téléverser des photos d'entraînement",
+  "upload.placeholder_name": "Nom de la personne (ExternalImageId)",
+  "upload.button": "Téléverser",
+  "upload.uploading": "Téléversement...",
+  "upload.hint": "Enregistré dans training_cache et indexé dans Rekognition.",
+  "upload.success": "Téléversé : {name} (image_id : {image_id})",
+
+  "gallery.title": "Galerie (cache local)",
+  "gallery.empty": "Aucune image dans la galerie.",
+  "gallery.images_count": "{count} image(s)",
+
+  "roi.no_cameras": "Aucune entité camera.* trouvée dans Home Assistant.",
+  "roi.title": "Éditeur ROI",
+  "roi.camera": "Caméra",
+  "roi.refresh_image": "Rafraîchir l'image",
+  "roi.delete_selected": "Supprimer la ROI sélectionnée",
+  "roi.instructions": "Faites glisser sur l'image pour créer une ROI. Faites glisser une ROI pour la déplacer. Faites glisser le coin inférieur droit pour redimensionner.",
+  "roi.list_title": "ROIs de la caméra",
+  "roi.none": "Aucune ROI configurée.",
+  "roi.zone": "Zone {n}",
+  "roi.name_optional": "Nom (optionnel)",
+
+  "plates.title": "Plaques → noms",
+  "plates.placeholder_plate": "Plaque (ex. DC964JJ)",
+  "plates.placeholder_name": "Nom (ex. Mattia)",
+  "plates.add": "Ajouter",
+  "plates.remove": "Retirer",
+  "plates.none": "Aucune correspondance plaque → nom.",
+  "plates.normalize_hint": "Les plaques sont normalisées (MAJUSCULES, sans espaces/séparateurs).",
+  "plates.err_plate": "Saisissez une plaque valide.",
+  "plates.err_name": "Saisissez un nom pour cette plaque."
+}
