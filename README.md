@@ -387,7 +387,7 @@ For best results, always combine ROI with appropriate confidence and area thresh
 
 ## Custom Card
 
-![Amazon Face Recognition](images/custom_card2.png)
+![Amazon Face Recognition](images/custom_card.png)
 
 ## Custom Lovelace Card
 
