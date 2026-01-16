@@ -1,97 +1,480 @@
 # Amazon Face Recognition for Home Assistant
 
-Amazon Face Recognition is a Home Assistant custom integration that adds **face recognition** and **object detection** capabilities using **AWS Rekognition**.
+## A complete face recognition ecosystem for Home Assistant
 
-This project is inspired by the work of **robmarkcole** and his original integration:
-- https://github.com/robmarkcole
-- https://github.com/robmarkcole/HASS-amazon-rekognition
+![Amazon Face Recognition](images/spot.png)
 
-The original project focused primarily on **object detection** using Amazon Rekognition.
+**Amazon Face Recognition** is a **full-featured ecosystem for Home Assistant**, composed of:
 
----
+- 🧠 a **custom integration** (backend & AWS communication)
+- 🖥 a **dedicated Custom Control Panel** (configuration & management)
+- 🖼 a **built-in Custom Lovelace Card** (visualization)
 
-## Project origin and evolution
+All components are designed together as a **single, coherent system**.
+There is **no legacy configuration**, no YAML setup and no external tools required.
 
-While this integration takes inspiration from the original work, the **codebase has been completely rewritten** and significantly expanded.
-
-Starting from the original concept of object detection, this project introduces a full **face recognition system**, transforming the integration into a comprehensive solution for people recognition and automation in Home Assistant.
-
-### Major differences from the original project
-
-Compared to the original integration, this project adds:
-
-- 👤 **Face recognition using AWS Rekognition Face Collections**
-- 🗂 **Face collection management**
-- 🔧 **Home Assistant services** to:
-  - index new faces
-  - delete faces by name
-  - delete all faces from a collection
-- 📊 **Dedicated entities and sensors** that:
-  - expose recognized users stored in AWS
-  - provide real-time information about detected and recognized persons
-- ⚡ **Entities specifically designed for automations**
-  - making it easy to trigger actions based on who is recognized
-- 🖼 **Annotated snapshots** with face and person bounding boxes
-- 🧾 **Recognition history index** stored as JSON
-
-The result is an integration that goes beyond simple detection and enables **identity-based automations** inside Home Assistant.
+Everything is managed directly from the Home Assistant UI.
 
 ---
 
-## Companion Custom Card
+## Core concepts
 
-To complete the experience, a dedicated **custom Lovelace card** has been developed specifically for this integration:
-
-👉 https://github.com/madmicio/aws-face-recognition-card
-
-The custom card allows you to:
-- visually display recognition results
-- browse saved snapshots
-- see recognized and unrecognized people
-- manage recognition data directly from the Home Assistant UI
-
-Together, the integration and the custom card provide a **complete face recognition ecosystem** for Home Assistant.
-
-![Amazon Face Recognition Dashboard](images/es.1.png)
+- AWS Rekognition is used as the AI engine
+- Home Assistant is the single control point
+- The **Custom Panel is the source of truth**
+- Local cache is always synchronized with AWS
+- The Custom Card is automatically available for dashboards
+- Multilingual UI (auto-detected from Home Assistant)
 
 ---
 
-It allows Home Assistant to:
-- Detect people in camera images
-- Recognize known faces
-- Save annotated snapshots
-- Expose events and sensors for automations
+## Main Features
 
-This integration is designed to be powerful but **easy to use**, even if you are not familiar with AWS.
+### 👤 Face Recognition
+- Face recognition using **AWS Rekognition Face Collections**
+- Known / unknown face separation
+- Annotated snapshots with bounding boxes
+- Local face index automatically synchronized at startup
+- Face recognition fully managed from the UI
+
+### 🖼 Face Gallery & Management
+- Visual face gallery inside Home Assistant
+- Upload training images directly from the panel
+- Delete individual identities or clear the entire collection
+- No services or YAML required
+- Local cache always aligned with AWS
+
+### 🎯 ROI (Region of Interest)
+- Define multiple ROIs per camera
+- Visual ROI editor
+- Analyze only specific image areas
+- Reduce false positives and AWS costs
+
+### 🚗 Vehicle & License Plate Recognition
+- Vehicle detection (car, truck, motorcycle, bus)
+- License plate OCR
+- Plate → owner mapping
+- Dedicated Plates panel
+- Annotated snapshots with vehicle and plate boxes
+
+## Face Gallery
+
+![Amazon Face Recognition](images/gallery_demo.png)
+
+
+
+The **Gallery** is the visual core of the Amazon Face Recognition ecosystem.  
+It provides a **real-time and historical view** of all processed images, detected faces, vehicles and license plates.
+
+The Gallery is tightly integrated with the backend and always reflects the **current local cache state**, which is automatically synchronized with AWS.
 
 ---
 
-## Features
+## What the Gallery shows
 
-- ✅ Face recognition using AWS Rekognition
-- ✅ Person and object detection
-- ✅ Annotated image snapshots with bounding boxes
-- ✅ JSON index with recognition history
-- ✅ Home Assistant services to manage faces
-- ✅ Sensors for recognized persons
-- ✅ Fully compatible with HACS
+The Gallery displays:
+
+- 🖼 **Annotated snapshots** generated by the integration
+- 👤 **Recognized faces** with assigned names
+- ❓ **Unrecognized faces**
+- 🚗 **Detected vehicles**
+- 🔢 **Recognized license plates**
+- 🕒 Timestamps and camera source
+- 🎯 ROI-based detections only (if ROI is enabled)
+
+Each image represents a **real analysis result**, not a static preview.
 
 ---
 
-## Requirements
+## Gallery Sections
 
-- Home Assistant
-- An AWS account (Free Tier supported)
-- AWS Rekognition enabled
-- Internet access
+The Gallery is divided into logical sections to improve clarity and usability.
+
+### Face Collection Overview
+At the top of the Gallery, you can see:
+- The number of persons currently stored in the AWS face collection
+- The local face index status
+- The last synchronization timestamp
+
+This section reflects the **actual state of AWS Rekognition**.
+
+---
+
+### Snapshot List
+The main area shows the list of saved snapshots.
+
+For each snapshot you can:
+- See detection results at a glance
+- Identify which camera generated the image
+- Check when the detection occurred
+
+Snapshots are ordered chronologically, with the most recent at the top.
+
+---
+
+## Interacting with Gallery Items
+
+Clicking on a snapshot allows you to:
+
+- 🔍 View the image in full resolution
+- 👤 Inspect detected faces and labels
+- 🚗 Review vehicles and license plates
+- 🧭 See bounding boxes and confidence overlays
+- 🕒 Analyze detection timing and context
+
+This makes the Gallery a powerful **debugging and validation tool**.
+
+---
+
+## Face Management from the Gallery
+
+The Gallery is not only a viewer, but also a **management interface**.
+
+From the Gallery you can:
+
+- ➕ Upload new training images
+- 👤 Assign images to a person
+- 🗑 Delete a person and all related images
+- 🧹 Clear the entire face collection (with confirmation)
+- 🔄 Refresh the face index manually
+
+All actions are executed in a safe and controlled way:
+- AWS is updated
+- Local cache is updated
+- UI is refreshed instantly
+
+---
+
+## Recognized vs Unrecognized Faces
+
+The Gallery clearly distinguishes between:
+
+- **Recognized faces**
+  - Shown with the person’s name
+  - Linked to the AWS face collection
+- **Unrecognized faces**
+  - Shown as unknown
+  - Can be used to train new identities
+
+This workflow allows you to:
+- start with unknown faces
+- progressively build your face collection
+- improve recognition accuracy over time
+
+---
+
+## Gallery and ROI
+
+When ROI is enabled:
+
+- Only detections inside ROIs appear in the Gallery
+- Snapshots still show the full image
+- Bounding boxes are drawn only for ROI-based detections
+
+This ensures consistency between:
+- what is analyzed
+- what is stored
+- what is displayed
+
+---
+
+## Gallery and Storage Management
+
+The Gallery respects all snapshot options:
+
+- `max_saved_files`
+- `save_timestamped_file`
+- `always_save_latest_file`
+
+When old files are deleted:
+- the Gallery updates automatically
+- no stale entries remain visible
+
+---
+
+## Gallery and Automations
+
+The Gallery reflects the same data used by:
+- sensors
+- events
+- automations
+
+This means:
+- what you see in the Gallery is exactly what Home Assistant reacts to
+- no hidden detections or mismatches
+
+---
+
+## Typical Use Cases
+
+- Validate face recognition accuracy
+- Inspect false positives
+- Review vehicle and plate detections
+- Debug ROI configuration
+- Train new faces from real events
+- Monitor entrances, driveways and parking areas
+
+---
+
+## Summary
+
+The Gallery is the **central visual interface** of the integration.
+
+It allows you to:
+- understand what the AI detects
+- manage faces safely
+- validate configuration choices
+- keep AWS and Home Assistant perfectly aligned
+
+For daily usage, debugging and long-term reliability, the Gallery is an essential part of the ecosystem.
+
+
+## ROI - Region of Intesrest
+
+![Amazon Face Recognition](images/roi.png)
+
+
+ROI (Region of Interest) allows you to define **specific areas of the camera image** that should be analyzed by AWS Rekognition.
+
+Only the defined regions are processed, while everything outside the ROI is ignored.
+
+This is one of the most important features of the integration, as it improves **accuracy**, **performance**, and **cost efficiency**.
+
+---
+
+## Why use ROI
+
+Using ROI provides several advantages:
+
+- 🎯 Focus detection only on relevant areas
+- ❌ Ignore background or irrelevant zones
+- 📉 Reduce false positives
+- 💰 Lower AWS Rekognition costs
+- ⚡ Improve overall performance
+
+Typical examples:
+- Analyze only the entrance door
+- Ignore sidewalks or public roads
+- Focus on a driveway instead of the whole street
+- Exclude trees, sky, or neighboring areas
+
+---
+
+## How ROI works
+
+- ROIs are defined **per camera**
+- Each camera can have **multiple ROIs**
+- ROIs are rectangular areas expressed as **normalized coordinates**
+- During processing:
+  - the image is cropped to each ROI
+  - AWS Rekognition is executed only on those regions
+  - results are mapped back to the original image
+- Bounding boxes are drawn in the correct global position
+
+Everything is handled transparently by the integration.
+
+---
+
+## Configuring ROI (GUI)
+
+ROI configuration is performed **exclusively via the Custom Control Panel**.
+
+### Steps:
+1. Open the **Amazon Face Recognition Control Panel**
+2. Select the **ROI** tab
+3. Choose the camera you want to configure
+4. Click **Add ROI**
+5. Draw the ROI directly on the camera image
+6. (Optional) Assign a name to the ROI
+7. Save the configuration
+
+Changes are applied immediately.
+
+No YAML configuration is required.
+
+---
+
+## Multiple ROIs per camera
+
+You can define more than one ROI for the same camera.
+
+This is useful when:
+- multiple entrances are visible
+- you want to separate driveway and pedestrian areas
+- different zones require different attention
+
+Each ROI is processed independently.
+
+---
+
+## ROI and Detection Types
+
+ROI affects **all detection types**, including:
+
+- Face recognition
+- Person detection
+- Vehicle detection
+- License plate recognition
+
+If an object appears **outside** all defined ROIs, it will **not be detected**.
+
+---
+
+## ROI and Snapshots
+
+- Only detections inside ROIs are included in snapshots
+- Bounding boxes are drawn only for ROI-based detections
+- The original image size is preserved
+- Non-ROI areas remain visible but ignored
+
+---
+
+## ROI and Cost Optimization
+
+ROI is the most effective way to reduce AWS costs.
+
+Best practices:
+- Keep ROIs as small as possible
+- Avoid scanning large background areas
+- Combine ROI with:
+  - higher confidence thresholds
+  - minimum area filters
+  - vehicle limits
+
+This drastically reduces the number of analyzed pixels and OCR calls.
+
+---
+
+## ROI Best Practices
+
+### Entrance Door
+- Small ROI around the door
+- High confidence thresholds
+- Ideal for face recognition
+
+### Driveway
+- Medium ROI covering vehicle path
+- Combine with vehicle detection
+- Limit max vehicles to scan
+
+### Parking Area
+- Larger ROI
+- Lower vehicle area threshold
+- Higher max vehicles (if needed)
+
+---
+
+## ROI and System Behavior
+
+- If **no ROI is defined**, the **entire image is analyzed**
+- ROI configuration is stored locally
+- ROI settings persist across restarts
+- ROI changes do not require a Home Assistant restart
+
+---
+
+## Summary
+
+ROI allows you to transform generic image analysis into **precise, targeted detection**.
+
+It is the recommended approach for:
+- reliable face recognition
+- vehicle and plate detection
+- cost-efficient AWS usage
+
+For best results, always combine ROI with appropriate confidence and area thresholds.
+
+
+## Custom Card
+
+![Amazon Face Recognition](images/custom_card2.png)
+
+## Custom Lovelace Card
+
+The **Amazon Face Recognition Custom Card** represents the visualization layer of the ecosystem.  
+It is automatically available after installing the integration and provides an **interactive, read-only view** of analysis results directly inside Lovelace dashboards.
+
+The card is designed to **display data generated by the backend**, without modifying it, ensuring full consistency with the Control Panel, Gallery, sensors and automations.
+
+---
+
+## Purpose of the Custom Card
+
+The Custom Card allows you to:
+
+- 🖼 Visualize **annotated snapshots**
+- 🔍 Interact with images (zoom, pan, reset)
+- 💾 Download snapshots to the local device
+- 🎥 Switch to **live camera view** of the camera that generated the snapshot
+- 👤 View recognized and unrecognized faces
+- 📋 Display detected objects and vehicles (optional)
+- 🚗 Display recognized and unrecognized license plates
+- 🕒 Understand context with timestamps and camera information
+
+All configuration and management actions are handled by the **Custom Control Panel**, not by the card.
+
+---
+
+## Automatic Availability
+
+No separate installation is required.
+
+- The card is automatically registered with Home Assistant
+- No JavaScript resources need to be added
+- No additional HACS steps are required
+
+The card can be used immediately after installing the integration.
+
+---
+
+## Adding the Card to Lovelace
+
+### UI Editor
+1. Open a Lovelace dashboard
+2. Click **Edit Dashboard**
+3. Add a new card
+4. Select **Amazon Face Recognition Card**
+5. Choose the camera entity
+
+### YAML Mode
+```yaml
+type: custom:aws-face-recognition-card
+camera_entity: camera.front_door
+```
+
+
+##
+
+
+---
+
+## Internationalization
+
+- Default language: **English**
+- Automatically adapts to Home Assistant system language
+- Supported languages:
+  - English, Italian, French, Spanish, Portuguese, German, Polish
+
+---
+
+## Configuration philosophy (IMPORTANT)
+
+⚠️ **Legacy YAML configuration is NOT supported.**
+
+This integration is **100% GUI-based**:
+- Config Flow
+- Options Flow
+- Custom Control Panel
+
+All face-related operations are intentionally handled **only via the panel** to guarantee consistency between AWS, backend and UI.
 
 ---
 
 ## Installation (HACS)
 
-1. Open **HACS** in Home Assistant
+1. Open **HACS**
 2. Go to **Integrations**
-3. Add this repository as a **custom repository**
+3. Add this repository as a **Custom Repository**
 4. Search for **Amazon Face Recognition**
 5. Install and restart Home Assistant
 
@@ -209,298 +592,425 @@ You only need **one collection**.
 Home Assistant only needs the **Collection ID**.
 
 ---
+---
 
-## Home Assistant configuration
+## Home Assistant Setup
 
-Below is a complete configuration example with **all supported options**:
+Add the integration from **Settings → Devices & Services** and complete the configuration wizard.
 
+---
+
+## Automations
+
+Use sensors and events to trigger actions based on recognized faces or vehicles.
+
+---
+
+
+# Options Flow – Detailed Explanation
+
+The following options are available in the **Options Flow (GUI)** and control **snapshot storage**, **overlay rendering (boxes & labels)** and **detection filtering**.
+
+---
+
+### `max_saved_files`
+**What it does:**  
+Limits how many historical snapshot files are kept in the snapshot directory.  
+When the limit is exceeded, the oldest files are automatically deleted.
+
+**How to configure:**
+- Integer value (e.g. `10`, `50`, `200`)
+- Lower values save disk space
+- Higher values keep more history for debugging or auditing
+
+**Recommended values:**
+- `10–30` for testing
+- `100+` if you want long-term history
+
+---
+
+### `save_file_format` (jpg / png)
+**What it does:**  
+Defines the image format used for saved snapshots.
+
+- **jpg** → smaller files, ideal for storage and notifications  
+- **png** → higher quality, but larger files
+
+**How to configure:**  
+Select the desired option in the UI.
+
+**Recommendation:**  
+Use `jpg` in most scenarios.
+
+---
+
+### `save_timestamped_file`
+**What it does:**  
+When enabled, the integration saves timestamped snapshot files such as:
+
+recognition_20260115_173234.jpg
+
+These files create the historical archive and populate the local gallery.
+
+**How to configure:**
+- ✅ Enabled: keep a snapshot history
+- ⛔ Disabled: no historical files
+
+**Recommendation:**  
+Enable this option if you use the gallery or want event history.
+
+---
+
+### `always_save_latest_file`
+**What it does:**  
+Always saves (and overwrites) a fixed file representing the latest scan result  
+(e.g. `recognition_latest.jpg`).
+
+**Key difference:**
+- `save_timestamped_file` → multiple historical files
+- `always_save_latest_file` → one constantly updated file
+
+**Typical use cases:**
+- Dashboards showing the latest snapshot
+- Notifications referencing a fixed image path
+- Continuous monitoring / debugging
+
+**Recommendation:**  
+Enable this option in most setups.
+
+---
+
+### `show_boxes`
+**What it does:**  
+Enables or disables drawing bounding boxes and labels on saved images.
+
+- ✅ Enabled: annotated snapshots
+- ⛔ Disabled: clean images without overlays
+
+**Recommendation:**  
+Enable for visibility and debugging, disable if you prefer clean images.
+
+---
+
+### `s3_bucket`
+**What it does:**  
+If set, snapshots are also uploaded to the specified **AWS S3 bucket**.
+
+**How to configure:**
+- Enter the bucket name (e.g. `my-homeassistant-bucket`)
+- Leave empty to disable S3 upload
+
+**Important notes:**
+- The IAM user must have S3 permissions
+- Useful for external access, backups or integrations
+
+---
+
+### `label_font_level`
+**What it does:**  
+Controls the size of the text labels drawn on bounding boxes.
+
+- Higher value → larger text
+- Lower value → smaller text
+
+**How to configure:**  
+Slider with numeric value (e.g. `6`).
+
+**Recommendations:**
+- `4–6` works well for most cameras
+- Increase for mobile viewing
+- Decrease if labels cover too much of the image
+
+---
+
+### `max_red_boxes`
+**What it does:**  
+Limits the maximum number of red bounding boxes drawn on a snapshot  
+(typically used for unrecognized persons or people detections).
+
+This prevents images from becoming cluttered when many detections occur.
+
+**How to configure:**
+- Slider with numeric value
+- Common values: `3–10`
+
+**Examples:**
+- `3` → only the most relevant detections
+- `10` → more complete but noisier view
+
+---
+
+### `min_red_box_area_pct`
+**What it does:**  
+Filters out very small bounding boxes based on image area percentage.
+
+- Higher value → more aggressive filtering
+- Lower value → more sensitive detection
+
+**How to configure:**
+- Percentage slider (typically `0–5%`)
+
+**Practical advice:**
+- Increase if you see distant false positives
+- Decrease if you miss valid distant detections
+
+---
+
+### `default_min_confidence`
+**What it does:**  
+Defines the global minimum confidence threshold for detections.
+
+- Higher value → fewer false positives
+- Lower value → more detections, more noise
+
+**How to configure:**  
+Numeric value (typically `10–100`).
+
+**Recommendations:**
+- Faces / persons: `70–90`
+- Generic objects: `50–80`
+
+> This value is used as a fallback if no per-target confidence is defined.
+
+---
+
+### `targets_confidence`
+**What it does:**  
+Allows defining **specific confidence thresholds per target**.
+
+This field accepts a key-value mapping where:
+- key = target label
+- value = minimum confidence
+
+**Example:**
 ```yaml
-image_processing:
-  - platform: amazon_face_recognition
-    aws_access_key_id: XXXXXXXXXXXXXXXXXXXXXXXXXXX
-    aws_secret_access_key: XXXXXXXXXXXXXXXXXXXXXXX
-    region_name: eu-west-1
-    collection_id: homeassistant_faces
+car: 50
+person: 80
 
-    targets:
-      - target: person
-      - target: car
-        confidence: 50
-
-    source:
-      - entity_id: camera.camera_test_rekognition
-
-    save_file_format: jpg   # jpg or png
-    save_file_folder: /config/www/snapshots/
-    save_timestamped_file: true
-
-    s3_bucket: homeassistant-bucket-253490766504
-
-    always_save_latest_file: true
-    max_saved_files: 10
-
-    label_font_scale: 0.026
-    max_red_boxes: 10
-    min_red_box_area: 0.02
-```
-### Restart Home Assistant after saving.
-
-
-
-## Configuration options explained
-- ### platform (required)
-
-    amazon_face_recognition
-    The name of this integration platform.
-    Make sure it matches the integration domain.
-
-- ### aws_access_key_id (required)
-
-    Your AWS Access Key ID created in IAM.
-
-- ### aws_secret_access_key (required)
-
-    Your AWS Secret Access Key created in IAM.
-
-        ⚠️ Keep this secret. Do not share it and do not publish it on GitHub.
-
-- ## region_name (required)
-
-    The AWS region used by Rekognition, for example:
-
-        eu-west-1
-
-        eu-central-1
-
-        us-east-1
-
-    The region must match the region where your face collection exists.
-
-- ## collection_id (optional, but required for face recognition)
-
-    The Face Collection ID used for face recognition.
-
-    Example: homeassistant_faces
-
-    - If you set collection_id, the integration will try to recognize faces using that collection.
-
-    - If you leave it empty, the integration will still detect objects/people but faces will not be recognized.
-
-- ## targets (optional)
-
-    List of objects you want AWS Rekognition to detect.
-
-    Example:
-    ```yaml
-    targets:
-      - target: person
-      - target: car
-          confidence: 50
-    ```
-
-
-        - target: object name (example: person, car, dog, etc.)
-
-        - onfidence: optional per-target confidence threshold (10–100)
-
-    If confidence is not set for a target, the integration will use the global confidence value (if configured) or AWS defaults.
-
-
-- ## source (required)
-
-    The camera entities to process.
-
-    Example:
-    ```yaml
-    source:
-      - entity_id: camera.front_door
-    ```
-
-- ## Snapshot saving options
-    save_file_format (optional)
-
-    Image format for saved snapshots:
-
-    - jpg (default)
-
-    - png
-
-- ## save_file_folder
-
-    Folder where annotated snapshots are stored.
-
-    Example:   
-    ```yaml  
-    save_file_folder: /config/www/snapshots/
-    ```
-
-- ##  save_timestamped_file (optional)
-
-    If true, the integration saves a timestamped file name:
-
-    recognition_YYYYMMDD_HHMMSS.jpg
-
-- ## always_save_latest_file (optional)
-
-    If true, the integration saves an image even when no targets are detected (useful for debugging or for a “latest snapshot” view).
-
-    If false, snapshots are saved only when something is detected.
-
-- ## max_saved_files (optional)
-
-    Maximum number of saved snapshot files to keep in save_file_folder.
-
-    Old files will be automatically deleted.
-    Default: 10
-
-- ## S3 options (optional)
-    s3_bucket (optional)
-
-    If set, snapshots can be uploaded to an S3 bucket.
-
-    Example:
-    ```yaml
-    s3_bucket: my-homeassistant-bucket
-    ```
-
-The IAM user must have S3 permissions for that bucket.
-
-- ## Drawing and label tuning
-
-    These options control how bounding boxes and labels are rendered in snapshots.
-
-    label_font_scale (optional)
-
-    Controls the label text size (relative to image size).
-
-    Lower value = smaller text
-
-    Higher value = larger text
-
-    Default: 0.020
-
-    Example:
-    ```yaml
-    label_font_scale: 0.026
-    ```
-
-- ## max_red_boxes (optional)
-
-    Maximum number of red boxes drawn for “person” detections that are not recognized.
-
-    Default: 6
-
-    Example:
-    ```yaml
-    max_red_boxes: 10
-    ```
-    Set to 0 to disable red boxes.
-
-- ## min_red_box_area (optional)
-
-    Filters out very small person boxes (to reduce false positives).
-    Value is normalized (0.0–1.0) relative to the image area.
-
-    Default: 0.03
-
-    Example:
-```yaml
-    min_red_box_area: 0.02
 ```
 
 
 
-## After configuration
+---
 
-    - Restart Home Assistant
+### `excluded_object_labels`
+**What it does:**  
+Defines a list of object labels that should be **completely excluded** from processing and summaries.
 
-    - Check the created entities under Developer Tools → States
+Unlike `exclude_targets`, this option is specifically intended to:
+- remove unwanted object labels from the **final result set**
+- avoid clutter in summaries and UI
+- reduce noise caused by generic detections
 
-    - Use the services to add faces to your collection:
+**Typical use cases:**
+- Ignore objects such as `tree`, `plant`, `road`, `building`
+- Remove labels that are not relevant for automations
 
-        - amazon_face_recognition.index_face
+**How to configure:**  
+Enter one label per line.
 
-        - amazon_face_recognition.delete_faces_by_name
-
-        - amazon_face_recognition.delete_all_faces
-
-# Add faces to the collection (recommended)
-
-This integration provides Home Assistant services to manage faces.
-
-Index a new face
+**Example:**
 ```yaml
-service: amazon_face_recognition.index_face
-data:
-  file_path: /config/www/faces/mario.jpg
-  name: Mario
-```
-### Tips for best results
-
-- at least one face per image
-- at least one Frontal face
-- Good lighting
-- JPG or PNG format
-- Multiple images and different angles per person improve accuracy
-
-# Face management services
-## Delete all faces for a person
-```yaml
-service: amazon_face_recognition.delete_faces_by_name
-data:
-  name: Mario
-```
-## Delete all faces in the collection
-
-```yaml
-service: amazon_face_recognition.delete_all_faces
+tree
+plant
+road
 ```
 
-# Sensors and Events
 
-This integration provides:
+**Effect:**  
+Excluded object labels will not:
+- appear in detection summaries
+- trigger events
+- be considered for automations
 
-A sensor with the last recognized person
+---
 
-Events for detected objects and faces
+### `aws_api_cost`
+**What it does:**  
+Defines the **estimated cost per AWS Rekognition API call**, used for internal usage and cost statistics.
 
-Optional annotated snapshots with bounding boxes
+This value **does not affect AWS billing**.  
+It is used only to:
+- estimate monthly costs
+- populate usage sensors
+- provide transparency in Home Assistant
 
-These can be used in automations and dashboards.
+**Default value:**
 
-![Amazon Face Recognition entity](images/sensor.png)
-etc.etc
+```yaml
+0.0001$
+```
 
-# Notes about costs
+**Meaning:**  
+Approximately **$0.001 per image scan** (1,000 scans ≈ $1), which matches AWS Rekognition pricing for image analysis.
 
-Amazon Rekognition is a paid AWS service, but:
+**When to change it:**
+- If AWS pricing changes
+- If you want to adapt estimates to your region or usage model
 
-The Free Tier is usually enough for testing
+---
 
-Costs depend on the number of images processed
+### `scan_cars`
+**What it does:**  
+Enables or disables **vehicle detection and license plate recognition**.
 
-Always monitor usage in the AWS Console
+When enabled, the integration will:
+- detect vehicles (car, truck, motorcycle, bus)
+- perform license plate OCR
+- populate the Plates panel
+- generate vehicle-related events
 
-Pricing details:
+**How to configure:**
+- ✅ Enabled: vehicle and plate detection active
+- ⛔ Disabled: only face/object detection
+
+**Recommendation:**  
+Enable only if you need vehicle or plate recognition, to reduce AWS usage.
+
+---
+
+### `vehicle_area_abs_min`
+**What it does:**  
+Defines the **minimum vehicle bounding box size**, expressed as a percentage of the image area.
+
+This filters out:
+- very small vehicles
+- distant detections
+- common false positives
+
+**How to configure:**
+- Percentage slider (e.g. `1%`)
+
+**Examples:**
+- `1%`: balanced default
+- `2–3%`: aggressive filtering (near vehicles only)
+- `<1%`: very sensitive (detect distant vehicles)
+
+**Recommendation:**  
+Increase this value if you see many false vehicle detections.
+
+---
+
+### `max_vehicles_to_scan`
+**What it does:**  
+Limits the **maximum number of vehicles analyzed per image**.
+
+This helps to:
+- control AWS usage
+- avoid unnecessary OCR scans
+- improve performance in crowded scenes
+
+**How to configure:**
+- Slider with numeric value
+
+**Examples:**
+- `1–2`: ideal for driveways or private entrances
+- `3–5`: suitable for small parking areas
+- Higher values: useful for large scenes but increase cost
+
+**Recommendation:**  
+Keep this value as low as possible for your scenario.
+
+---
+
+## Vehicle Detection Configuration Examples
+
+### Driveway / Private Entrance
+- `scan_cars`: enabled
+- `vehicle_area_abs_min`: `1–2%`
+- `max_vehicles_to_scan`: `1`
+
+### Parking Area
+- `scan_cars`: enabled
+- `vehicle_area_abs_min`: `0.5–1%`
+- `max_vehicles_to_scan`: `3–5`
+
+### No Vehicle Detection
+- `scan_cars`: disabled
+
+---
+
+## Sensor Attributes – `sensor.amazon_face_recognition_last_recognized`
+
+The sensor `sensor.amazon_face_recognition_last_recognized` exposes additional attributes
+that can be used for automations and advanced logic.
+
+### 🚨 `alert` (boolean)
+
+**Description**  
+The `alert` attribute is set to `true` when **no known person is recognized in the analyzed snapshot**.
+
+**Possible values:**
+- `true` → no recognized person is present in the snapshot
+- `false` → at least one recognized person is present
+
+**Behavior:**
+- `alert: true` is set **only if one or more faces are detected and all of them are unknown**
+- If no faces are detected, the snapshot is **not considered an alert**
+- If at least one known person is recognized, `alert` is always `false`
+
+This attribute allows a clear distinction between:
+- presence of **recognized persons**
+- presence of **only unknown persons**
+- **no persons detected**
+
+---
+
+### 🔔 Typical use cases
+
+- Trigger notifications **only when an unknown person is detected**
+- Activate alarms or lights only for **unrecognized faces**
+- Avoid notifications when family members or known people are present
+
+---
+
+### 🧠 Automation example (conceptual)
+
+Trigger condition:
+```yaml
+{{ state_attr('sensor.amazon_face_recognition_last_recognized', 'alert') == true }}
+```
+This ensures that:
+
+recognized persons do not generate alerts
+
+unknown persons do trigger automations
+
+✔️ Advantages
+
+No complex automation logic required
+
+Clear and reliable alert state
+
+Fully consistent with Gallery, snapshots, events and sensors
+
+Zero false alerts when a known person is present
+
+---
+
+
+## Cost Optimization Tips
+
+- Use **ROI** to limit scanned areas
+- Disable `scan_cars` if not required
+- Increase `vehicle_area_abs_min` to reduce OCR calls
+- Limit `max_vehicles_to_scan`
+- Monitor usage sensors in Home Assistant
+
+These options allow you to precisely balance **accuracy**, **performance**, and **AWS costs**.
+
+
+
+## Performance & Costs
+
+ROI reduces AWS calls and costs.
+AWS Free Tier is sufficient for testing.
+
 https://aws.amazon.com/rekognition/pricing/
 
-USD 0.001 per scan (1,000 scans = USD 1)
+---
 
-12 months free (AWS Free Tier)
-
-
-
-# Troubleshooting
-
-Make sure the AWS region matches everywhere
-
-Use clear images with a single face
-
-Check that the Collection ID is correct
-
-Verify IAM permissions
-
-# Disclaimer
+## Disclaimer
 
 This project is not affiliated with Amazon or AWS.
 Amazon Rekognition is a trademark of Amazon Web Services.
