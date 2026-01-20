@@ -28,6 +28,10 @@
           "always_save_latest_file": "Salva anche recognition_latest",
           "show_boxes": "Disegna box",
           "s3_bucket": "Bucket S3 (opzionale)",
+          "cloud_gallery_enabled": "Abilita integrazione S3",
+          "cloud_gallery_prefix": "Prefix S3",
+          "cloud_gallery_sync_on_startup": "Sincronizza da S3 all'avvio",
+          "cloud_scan_upload_enabled": "Carica su S3 i file dello scan (snapshot/index)",
 
           "label_font_level": "Dimensione font label",
           "max_red_boxes": "Numero massimo box rossi",

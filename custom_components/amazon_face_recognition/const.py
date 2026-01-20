@@ -22,7 +22,29 @@ CONF_AWS_SECRET_ACCESS_KEY = "aws_secret_access_key"
 CONF_REGION_NAME = "region_name"
 CONF_COLLECTION_ID = "collection_id"
 
+# Folder under /config/www used to store the (local) gallery / annotated snapshots.
+# NOTE: this folder is exposed by Home Assistant as /local/<AFR_SCAN_DIRNAME>.
+#
+# IMPORTANT:
+# - This folder is for *snapshots/annotated images*.
+# - Training images (used for indexing faces) are stored under /config/<TRAINING_ROOT_DIRNAME>/training_cache.
 AFR_SCAN_DIRNAME = "amazon_face_recognition_scan"
+
+# Folder under /config used to store training cache (images uploaded for indexing).
+TRAINING_ROOT_DIRNAME = "amazon_face_gallery"
+
+# Optional Cloud Gallery (S3)
+CONF_CLOUD_GALLERY_ENABLED = "cloud_gallery_enabled"
+CONF_CLOUD_GALLERY_PREFIX = "cloud_gallery_prefix"
+CONF_CLOUD_GALLERY_SYNC_ON_STARTUP = "cloud_gallery_sync_on_startup"
+
+# If enabled, the integration will also upload the *scan* artifacts produced by
+# the service `amazon_face_recognition.scan` (recognition_*.jpg,
+# recognition_latest.jpg, recognition_index.json) to S3 under cloud_gallery_prefix.
+#
+# Face gallery sync (training_cache + gallery_store + manifest) is handled by
+# face_gallery_s3.py and is NOT affected by this flag.
+CONF_CLOUD_SCAN_UPLOAD_ENABLED = "cloud_scan_upload_enabled"
 
 
 CONF_SCALE = "scale"
@@ -66,7 +88,7 @@ DEFAULT_SCALE = 1.0
 
 DEFAULT_MAX_SAVED_FILES = 10
 DEFAULT_SAVE_FILE_FORMAT = "jpg"
-DEFAULT_SAVE_TIMESTAMPED_FILE = False
+DEFAULT_SAVE_TIMESTAMPED_FILE = True
 DEFAULT_ALWAYS_SAVE_LATEST_FILE = True
 DEFAULT_SHOW_BOXES = True
 
@@ -118,11 +140,6 @@ WS_SET_ROI = f"{DOMAIN}/set_roi"
 WS_SUBSCRIBE_ROI = f"{DOMAIN}/subscribe_roi"
 
 # const.py
-AFR_SCAN_DIRNAME = "amazon_face_recognition_scan"
-
-
-
-
 
 SUPPORTED_REGIONS = [
     "us-east-1", "us-east-2", "us-west-1", "us-west-2", "ca-central-1",
@@ -133,3 +150,6 @@ SUPPORTED_REGIONS = [
 
 WS_GET_GALLERY = f"{DOMAIN}/get_gallery"
 WS_SUBSCRIBE_GALLERY = f"{DOMAIN}/subscribe_gallery"
+
+# Face gallery (training_cache) S3 sync
+WS_SYNC_FACE_GALLERY = f"{DOMAIN}/sync_face_gallery"

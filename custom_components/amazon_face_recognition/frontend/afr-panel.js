@@ -66,6 +66,11 @@ class AfrPanel extends HTMLElement {
     this._i18nLang = null;
     this._i18nDict = {};
     this._i18nLoading = null; // Promise
+
+    // lifecycle
+    this._connectedOnce = false;
+    this._initialRefreshQueued = false;
+    this._didInitialRefresh = false;
   }
 
   set hass(hass) {
@@ -88,6 +93,20 @@ class AfrPanel extends HTMLElement {
       this._rendered = true;
       this._scheduleRender();
     }
+
+    // If the element is already connected, ensure we perform one deterministic
+    // refresh after the first hass assignment. This fixes cases where the panel
+    // renders before HA websocket/data is ready and the top cards stay empty
+    // until a manual browser refresh.
+    if (this.isConnected) this._queueInitialRefresh();
+  }
+
+  connectedCallback() {
+    // HA can assign `hass` before the element is attached to the DOM.
+    // We do one extra render + one deterministic refresh once connected.
+    if (!this._connectedOnce) this._connectedOnce = true;
+    this._scheduleRender();
+    this._queueInitialRefresh();
   }
 
 
@@ -176,50 +195,55 @@ class AfrPanel extends HTMLElement {
     return withEntry?.config?.entry_id || withEntry?.config?.entryId || null;
   }
 
-    async _openOptions() {
-      try {
-        // 1) prova dialog diretto (se supportato)
-        const entryId = this._getEntryIdFromPanels();
-        if (entryId) {
-          const ev = new CustomEvent("show-dialog", {
-            detail: {
-              dialogTag: "ha-config-entry-dialog",
-              dialogParams: { entryId },
-            },
-            bubbles: true,
-            composed: true,
-          });
-          this.dispatchEvent(ev);
 
-          // aspetta un attimo: se il dialog esiste, lo trovi nel DOM
-          await new Promise((r) => setTimeout(r, 200));
-          const dialog = document.querySelector("ha-config-entry-dialog");
-          if (dialog) {
-            console.log("[AFR] opened ha-config-entry-dialog for", entryId);
-            return;
-          }
-        }
-
-        // 2) fallback: vai alla pagina integrazione
-        const url = "/config/integrations/integration/amazon_face_recognition";
-
-        if (typeof this._hass?.navigate === "function") {
-          this._hass.navigate(url);
-        } else {
-          history.pushState(null, "", url);
-          window.dispatchEvent(new Event("location-changed", { bubbles: true, composed: true }));
-        }
-
-        // 3) auto-click on CONFIGURE/OPTIONS
-        const ok = await this._clickConfigureOnIntegrationPage();
-        if (!ok) console.warn("[AFR] user must click CONFIGURE manually");
-      } catch (e) {
-        console.error("[AFR] open options failed", e);
-      }
+  _qsDeep(pathFn) {
+    try {
+      return pathFn();
+    } catch (e) {
+      return null;
     }
+  }
+  async _openOptions() {
+    try {
+      // 1) vai alla pagina dell'integrazione
+      const url = "/config/integrations/integration/amazon_face_recognition";
+      if (typeof this._hass?.navigate === "function") {
+        this._hass.navigate(url);
+      } else {
+        history.pushState(null, "", url);
+        window.dispatchEvent(new Event("location-changed", { bubbles: true, composed: true }));
+      }
+
+      // 2) aspetta e poi clicca il bottone OPTIONS (quello che apre il popup)
+      // retry ~6s
+      for (let i = 0; i < 60; i++) {
+        await new Promise((r) => setTimeout(r, 100));
+
+        const btn = this._qsDeep(() =>
+          document
+            .querySelector("body > home-assistant")?.shadowRoot
+            ?.querySelector("home-assistant-main")?.shadowRoot
+            ?.querySelector("ha-drawer > partial-panel-resolver > ha-panel-config > ha-config-integrations > ha-config-integration-page")?.shadowRoot
+            ?.querySelector("hass-subpage > div > div.section > ha-config-entry-row")?.shadowRoot
+            ?.querySelector("ha-md-list > ha-md-list-item > ha-icon-button:nth-child(4)")
+        );
+
+        if (btn && typeof btn.click === "function") {
+          btn.click();
+          console.log("[AFR] clicked entry-row options icon (popup should open)");
+          return;
+        }
+      }
+
+      console.warn("[AFR] options icon not found (DOM changed or page not ready)");
+    } catch (e) {
+      console.error("[AFR] openOptions failed", e);
+    }
+  }
 
 
-    _deepQueryAll(selector, root = document) {
+
+  _deepQueryAll(selector, root = document) {
     const out = [];
     const pushAll = (node) => {
       if (!node) return;
@@ -310,6 +334,29 @@ class AfrPanel extends HTMLElement {
     requestAnimationFrame(() => {
       this._renderQueued = false;
       this._render();
+    });
+  }
+
+  _queueInitialRefresh() {
+    if (this._didInitialRefresh) return;
+    if (this._initialRefreshQueued) return;
+    if (!this._hass || !this._hass.connection) return;
+
+    this._initialRefreshQueued = true;
+
+    // Defer to next tick so HA finishes wiring websocket/panels.
+    Promise.resolve().then(async () => {
+      try {
+        // allow one paint
+        await new Promise((r) => requestAnimationFrame(() => r()));
+        await this._refreshAll();
+        this._didInitialRefresh = true;
+      } catch (e) {
+        // don't block the UI if something goes wrong; user can still use Refresh button
+        console.debug("[AFR] initial refresh skipped", e);
+      } finally {
+        this._initialRefreshQueued = false;
+      }
     });
   }
 
@@ -1007,6 +1054,19 @@ class AfrPanel extends HTMLElement {
     await this._loadGallery();
   }
 
+  async _syncFaceGalleryFromS3() {
+    if (!this._hass) return;
+    try {
+      await this._hass.connection.sendMessagePromise({
+        type: "amazon_face_recognition/sync_face_gallery",
+        force_align: true,
+      });
+    } catch (e) {
+      // If S3 is not configured, this is a no-op.
+      console.debug("[AFR] sync_face_gallery failed", e);
+    }
+  }
+
   _subscribeGallery() {
     if (!this._hass || this._unsubGallery) return;
 
@@ -1548,7 +1608,10 @@ class AfrPanel extends HTMLElement {
 
     // bindings common
     const btn = root.getElementById("refresh");
-    if (btn) btn.onclick = () => this._refreshAll();
+    if (btn) btn.onclick = async () => {
+      await this._syncFaceGalleryFromS3();
+      await this._refreshAll();
+    };
 
     const delAll = root.getElementById("delete_all");
     if (delAll) delAll.onclick = () => this._deleteAll();
