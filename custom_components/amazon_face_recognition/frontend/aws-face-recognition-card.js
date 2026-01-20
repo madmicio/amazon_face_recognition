@@ -33,22 +33,22 @@ var Mt,It;class Lt extends m{constructor(){super(...arguments),this.renderOption
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e):((t,e)=>{const{kind:i,elements:s}=e;return{kind:i,elements:s,finisher(e){customElements.define(t,e)}}})(t,e),Wt=(t,e)=>"method"===e.kind&&e.descriptor&&!("value"in e.descriptor)?{...e,finisher(i){i.createProperty(e.key,t)}}:{kind:"field",key:Symbol(),placement:"own",descriptor:{},originalKey:e.key,initializer(){"function"==typeof e.initializer&&(this[e.key]=e.initializer.call(this))},finisher(i){i.createProperty(e.key,t)}};
+const Bt=(t,e)=>"method"===e.kind&&e.descriptor&&!("value"in e.descriptor)?{...e,finisher(i){i.createProperty(e.key,t)}}:{kind:"field",key:Symbol(),placement:"own",descriptor:{},originalKey:e.key,initializer(){"function"==typeof e.initializer&&(this[e.key]=e.initializer.call(this))},finisher(i){i.createProperty(e.key,t)}};
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function Vt(t){return(e,i)=>void 0!==i?((t,e,i)=>{e.constructor.createProperty(i,t)})(t,e,i):Wt(t,e)}
+ */function Wt(t){return(e,i)=>void 0!==i?((t,e,i)=>{e.constructor.createProperty(i,t)})(t,e,i):Bt(t,e)}
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function Zt(t){return Vt({...t,state:!0})}
+ */function Vt(t){return Wt({...t,state:!0})}
 /**
  * @license
  * Copyright 2021 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */var Ft;null===(Ft=window.HTMLSlotElement)||void 0===Ft||Ft.prototype.assignedElements;var Kt=r`
+ */var Zt;null===(Zt=window.HTMLSlotElement)||void 0===Zt||Zt.prototype.assignedElements;var Ft=r`
   .card {
     padding: 12px;
   }
@@ -630,11 +630,11 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
     margin-top: 8px;
     font-size: 13px;
   }
-`;const Yt="aws-face-recognition-card",qt="aws-face-recognition-editor",Gt={title:"Recognition",updated:"Updated",time:"Time",unrecognized:"Unrecognized",recognized:"Recognized",objects:"Objects",none:"None",no_image:"No image available",reset_zoom:"Reset zoom",error:"Error",unknown_person_found:"Unknown person found",status_unknown:"Unknown detected",status_clear:"All clear",plates:"Plates",no_camera:"No linked camera",live_to_snapshot:"Back to snapshot",live_view:"View live",prev:"Previous",next:"Next",back:"Back",refresh:"Refresh",play:"Play",pause:"Pause",download:"Download",editor_playback:"Playback",editor_autoplay:"Autoplay",editor_autoplay_seconds:"Autoplay seconds",editor_display:"Display",editor_show_object_list:"Show object list"},Qt={en:Gt,it:{title:"Riconoscimento",updated:"Aggiornato",time:"Ora",unrecognized:"Non riconosciuti",recognized:"Riconosciuti",objects:"Oggetti",none:"Nessuno",no_image:"Nessuna immagine disponibile",reset_zoom:"Reimposta zoom",error:"Errore",unknown_person_found:"Sconosciuto rilevato",status_unknown:"Sconosciuto rilevato",status_clear:"Nessuno sconosciuto",plates:"Targhe",no_camera:"Nessuna camera associata",live_to_snapshot:"Torna allo snapshot",live_view:"Visualizza live",prev:"Precedente",next:"Successivo",back:"Indietro",refresh:"Aggiorna",play:"Play",pause:"Pausa",download:"Scarica",editor_playback:"Riproduzione",editor_autoplay:"Riproduzione automatica",editor_autoplay_seconds:"Secondi autoplay",editor_display:"Visualizzazione",editor_show_object_list:"Mostra elenco oggetti"},fr:{title:"Reconnaissance",updated:"Mis à jour",time:"Heure",unrecognized:"Non reconnus",recognized:"Reconnus",objects:"Objets",none:"Aucun",no_image:"Aucune image disponible",reset_zoom:"Réinitialiser le zoom",error:"Erreur",unknown_person_found:"Personne inconnue détectée",status_unknown:"Inconnu détecté",status_clear:"Rien à signaler",plates:"Plaques",no_camera:"Aucune caméra liée",live_to_snapshot:"Retour à l’instantané",live_view:"Voir en direct",prev:"Précédent",next:"Suivant",back:"Retour",refresh:"Rafraîchir",play:"Lecture",pause:"Pause",download:"Télécharger",editor_playback:"Lecture",editor_autoplay:"Lecture automatique",editor_autoplay_seconds:"Secondes d’autoplay",editor_display:"Affichage",editor_show_object_list:"Afficher la liste d’objets"},es:{title:"Reconocimiento",updated:"Actualizado",time:"Hora",unrecognized:"No reconocidos",recognized:"Reconocidos",objects:"Objetos",none:"Ninguno",no_image:"No hay imagen disponible",reset_zoom:"Restablecer zoom",error:"Error",unknown_person_found:"Persona desconocida detectada",status_unknown:"Desconocido detectado",status_clear:"Todo ok",plates:"Matrículas",no_camera:"No hay cámara vinculada",live_to_snapshot:"Volver a la instantánea",live_view:"Ver en vivo",prev:"Anterior",next:"Siguiente",back:"Atrás",refresh:"Actualizar",play:"Reproducir",pause:"Pausa",download:"Descargar",editor_playback:"Reproducción",editor_autoplay:"Reproducción automática",editor_autoplay_seconds:"Segundos de autoplay",editor_display:"Visualización",editor_show_object_list:"Mostrar lista de objetos"},pt:{title:"Reconhecimento",updated:"Atualizado",time:"Hora",unrecognized:"Não reconhecidos",recognized:"Reconhecidos",objects:"Objetos",none:"Nenhum",no_image:"Nenhuma imagem disponível",reset_zoom:"Repor zoom",error:"Erro",unknown_person_found:"Pessoa desconhecida detetada",status_unknown:"Desconhecido detetado",status_clear:"Tudo ok",plates:"Matrículas",no_camera:"Nenhuma câmera associada",live_to_snapshot:"Voltar ao snapshot",live_view:"Ver ao vivo",prev:"Anterior",next:"Seguinte",back:"Voltar",refresh:"Atualizar",play:"Reproduzir",pause:"Pausa",download:"Transferir",editor_playback:"Reprodução",editor_autoplay:"Reprodução automática",editor_autoplay_seconds:"Segundos de autoplay",editor_display:"Visualização",editor_show_object_list:"Mostrar lista de objetos"},pl:{title:"Rozpoznawanie",updated:"Zaktualizowano",time:"Czas",unrecognized:"Nierozpoznani",recognized:"Rozpoznani",objects:"Obiekty",none:"Brak",no_image:"Brak dostępnego obrazu",reset_zoom:"Resetuj powiększenie",error:"Błąd",unknown_person_found:"Wykryto nieznaną osobę",status_unknown:"Wykryto nieznaną",status_clear:"Wszystko OK",plates:"Tablice",no_camera:"Brak powiązanej kamery",live_to_snapshot:"Powrót do migawki",live_view:"Podgląd na żywo",prev:"Poprzednie",next:"Następne",back:"Wstecz",refresh:"Odśwież",play:"Odtwórz",pause:"Pauza",download:"Pobierz",editor_playback:"Odtwarzanie",editor_autoplay:"Autoodtwarzanie",editor_autoplay_seconds:"Sekundy autoodtwarzania",editor_display:"Wyświetlanie",editor_show_object_list:"Pokaż listę obiektów"},de:{title:"Erkennung",updated:"Aktualisiert",time:"Uhrzeit",unrecognized:"Nicht erkannt",recognized:"Erkannt",objects:"Objekte",none:"Keine",no_image:"Kein Bild verfügbar",reset_zoom:"Zoom zurücksetzen",error:"Fehler",unknown_person_found:"Unbekannte Person erkannt",status_unknown:"Unbekannt erkannt",status_clear:"Alles ok",plates:"Kennzeichen",no_camera:"Keine verknüpfte Kamera",live_to_snapshot:"Zurück zum Snapshot",live_view:"Live anzeigen",prev:"Zurück",next:"Weiter",back:"Zurück",refresh:"Aktualisieren",play:"Abspielen",pause:"Pause",download:"Herunterladen",editor_playback:"Wiedergabe",editor_autoplay:"Automatische Wiedergabe",editor_autoplay_seconds:"Autoplay-Sekunden",editor_display:"Anzeige",editor_show_object_list:"Objektliste anzeigen"}};function Xt(t,e,i){var s,o;const n=function(t){var e;const i=String((null==t?void 0:t.language)||(null===(e=null==t?void 0:t.locale)||void 0===e?void 0:e.language)||"").toLowerCase().split("-")[0];return Qt[i]?i:"en"}(t);let r=null!==(o=null!==(s=(Qt[n]||Gt)[e])&&void 0!==s?s:Gt[e])&&void 0!==o?o:e;if(i)for(const[t,e]of Object.entries(i))r=r.replaceAll(`{${t}}`,String(e));return r}function Jt(t,e){var i;if(!e)return"";const s=new Date(e);if(Number.isNaN(s.getTime()))return e;const o=String((null==t?void 0:t.language)||(null===(i=null==t?void 0:t.locale)||void 0===i?void 0:i.language)||"en")||"en";return new Intl.DateTimeFormat(o,{dateStyle:"short",timeStyle:"medium"}).format(s)}let te=class extends Lt{constructor(){super(...arguments),this._config={}}setConfig(t){this._config=Object.assign({},t)}_emitConfigChanged(t){this._config=t,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}_onSwitchChange(t){var e;const i=t.target,s=null===(e=null==i?void 0:i.dataset)||void 0===e?void 0:e.key;if(!s)return;const o=!!i.checked,n=Object.assign(Object.assign({},this._config),{[s]:o});this._emitConfigChanged(n)}_onNumberChange(t){var e,i;const s=t.target,o=null===(e=null==s?void 0:s.dataset)||void 0===e?void 0:e.key;if(!o)return;const n=String(null!==(i=s.value)&&void 0!==i?i:"").trim();if(!n){const t=Object.assign({},this._config);return delete t[o],void this._emitConfigChanged(t)}const r=Number(n);Number.isNaN(r)||this._emitConfigChanged(Object.assign(Object.assign({},this._config),{[o]:r}))}render(){var t,e,i;const s=null!==(t=this._config.autoplay)&&void 0!==t&&t,o=null!==(e=this._config.autoplay_seconds)&&void 0!==e?e:3,n=null!==(i=this._config.show_object_list)&&void 0!==i&&i;return yt`
+`;const Kt="aws-face-recognition-card",Yt="aws-face-recognition-editor",qt={title:"Recognition",updated:"Updated",time:"Time",unrecognized:"Unrecognized",recognized:"Recognized",objects:"Objects",none:"None",no_image:"No image available",reset_zoom:"Reset zoom",error:"Error",unknown_person_found:"Unknown person found",status_unknown:"Unknown detected",status_clear:"All clear",plates:"Plates",no_camera:"No linked camera",live_to_snapshot:"Back to snapshot",live_view:"View live",prev:"Previous",next:"Next",back:"Back",refresh:"Refresh",play:"Play",pause:"Pause",download:"Download",editor_playback:"Playback",editor_autoplay:"Autoplay",editor_autoplay_seconds:"Autoplay seconds",editor_display:"Display",editor_show_object_list:"Show object list"},Gt={en:qt,it:{title:"Riconoscimento",updated:"Aggiornato",time:"Ora",unrecognized:"Non riconosciuti",recognized:"Riconosciuti",objects:"Oggetti",none:"Nessuno",no_image:"Nessuna immagine disponibile",reset_zoom:"Reimposta zoom",error:"Errore",unknown_person_found:"Sconosciuto rilevato",status_unknown:"Sconosciuto rilevato",status_clear:"Nessuno sconosciuto",plates:"Targhe",no_camera:"Nessuna camera associata",live_to_snapshot:"Torna allo snapshot",live_view:"Visualizza live",prev:"Precedente",next:"Successivo",back:"Indietro",refresh:"Aggiorna",play:"Play",pause:"Pausa",download:"Scarica",editor_playback:"Riproduzione",editor_autoplay:"Riproduzione automatica",editor_autoplay_seconds:"Secondi autoplay",editor_display:"Visualizzazione",editor_show_object_list:"Mostra elenco oggetti"},fr:{title:"Reconnaissance",updated:"Mis à jour",time:"Heure",unrecognized:"Non reconnus",recognized:"Reconnus",objects:"Objets",none:"Aucun",no_image:"Aucune image disponible",reset_zoom:"Réinitialiser le zoom",error:"Erreur",unknown_person_found:"Personne inconnue détectée",status_unknown:"Inconnu détecté",status_clear:"Rien à signaler",plates:"Plaques",no_camera:"Aucune caméra liée",live_to_snapshot:"Retour à l’instantané",live_view:"Voir en direct",prev:"Précédent",next:"Suivant",back:"Retour",refresh:"Rafraîchir",play:"Lecture",pause:"Pause",download:"Télécharger",editor_playback:"Lecture",editor_autoplay:"Lecture automatique",editor_autoplay_seconds:"Secondes d’autoplay",editor_display:"Affichage",editor_show_object_list:"Afficher la liste d’objets"},es:{title:"Reconocimiento",updated:"Actualizado",time:"Hora",unrecognized:"No reconocidos",recognized:"Reconocidos",objects:"Objetos",none:"Ninguno",no_image:"No hay imagen disponible",reset_zoom:"Restablecer zoom",error:"Error",unknown_person_found:"Persona desconocida detectada",status_unknown:"Desconocido detectado",status_clear:"Todo ok",plates:"Matrículas",no_camera:"No hay cámara vinculada",live_to_snapshot:"Volver a la instantánea",live_view:"Ver en vivo",prev:"Anterior",next:"Siguiente",back:"Atrás",refresh:"Actualizar",play:"Reproducir",pause:"Pausa",download:"Descargar",editor_playback:"Reproducción",editor_autoplay:"Reproducción automática",editor_autoplay_seconds:"Segundos de autoplay",editor_display:"Visualización",editor_show_object_list:"Mostrar lista de objetos"},pt:{title:"Reconhecimento",updated:"Atualizado",time:"Hora",unrecognized:"Não reconhecidos",recognized:"Reconhecidos",objects:"Objetos",none:"Nenhum",no_image:"Nenhuma imagem disponível",reset_zoom:"Repor zoom",error:"Erro",unknown_person_found:"Pessoa desconhecida detetada",status_unknown:"Desconhecido detetado",status_clear:"Tudo ok",plates:"Matrículas",no_camera:"Nenhuma câmera associada",live_to_snapshot:"Voltar ao snapshot",live_view:"Ver ao vivo",prev:"Anterior",next:"Seguinte",back:"Voltar",refresh:"Atualizar",play:"Reproduzir",pause:"Pausa",download:"Transferir",editor_playback:"Reprodução",editor_autoplay:"Reprodução automática",editor_autoplay_seconds:"Segundos de autoplay",editor_display:"Visualização",editor_show_object_list:"Mostrar lista de objetos"},pl:{title:"Rozpoznawanie",updated:"Zaktualizowano",time:"Czas",unrecognized:"Nierozpoznani",recognized:"Rozpoznani",objects:"Obiekty",none:"Brak",no_image:"Brak dostępnego obrazu",reset_zoom:"Resetuj powiększenie",error:"Błąd",unknown_person_found:"Wykryto nieznaną osobę",status_unknown:"Wykryto nieznaną",status_clear:"Wszystko OK",plates:"Tablice",no_camera:"Brak powiązanej kamery",live_to_snapshot:"Powrót do migawki",live_view:"Podgląd na żywo",prev:"Poprzednie",next:"Następne",back:"Wstecz",refresh:"Odśwież",play:"Odtwórz",pause:"Pauza",download:"Pobierz",editor_playback:"Odtwarzanie",editor_autoplay:"Autoodtwarzanie",editor_autoplay_seconds:"Sekundy autoodtwarzania",editor_display:"Wyświetlanie",editor_show_object_list:"Pokaż listę obiektów"},de:{title:"Erkennung",updated:"Aktualisiert",time:"Uhrzeit",unrecognized:"Nicht erkannt",recognized:"Erkannt",objects:"Objekte",none:"Keine",no_image:"Kein Bild verfügbar",reset_zoom:"Zoom zurücksetzen",error:"Fehler",unknown_person_found:"Unbekannte Person erkannt",status_unknown:"Unbekannt erkannt",status_clear:"Alles ok",plates:"Kennzeichen",no_camera:"Keine verknüpfte Kamera",live_to_snapshot:"Zurück zum Snapshot",live_view:"Live anzeigen",prev:"Zurück",next:"Weiter",back:"Zurück",refresh:"Aktualisieren",play:"Abspielen",pause:"Pause",download:"Herunterladen",editor_playback:"Wiedergabe",editor_autoplay:"Automatische Wiedergabe",editor_autoplay_seconds:"Autoplay-Sekunden",editor_display:"Anzeige",editor_show_object_list:"Objektliste anzeigen"}};function Qt(t,e,i){var s,o;const n=function(t){var e;const i=String((null==t?void 0:t.language)||(null===(e=null==t?void 0:t.locale)||void 0===e?void 0:e.language)||"").toLowerCase().split("-")[0];return Gt[i]?i:"en"}(t);let r=null!==(o=null!==(s=(Gt[n]||qt)[e])&&void 0!==s?s:qt[e])&&void 0!==o?o:e;if(i)for(const[t,e]of Object.entries(i))r=r.replaceAll(`{${t}}`,String(e));return r}function Xt(t,e){var i;if(!e)return"";const s=new Date(e);if(Number.isNaN(s.getTime()))return e;const o=String((null==t?void 0:t.language)||(null===(i=null==t?void 0:t.locale)||void 0===i?void 0:i.language)||"en")||"en";return new Intl.DateTimeFormat(o,{dateStyle:"short",timeStyle:"medium"}).format(s)}let Jt=class extends Lt{constructor(){super(...arguments),this._config={}}setConfig(t){this._config=Object.assign({},t)}_emitConfigChanged(t){this._config=t,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}_onSwitchChange(t){var e;const i=t.target,s=null===(e=null==i?void 0:i.dataset)||void 0===e?void 0:e.key;if(!s)return;const o=!!i.checked,n=Object.assign(Object.assign({},this._config),{[s]:o});this._emitConfigChanged(n)}_onNumberChange(t){var e,i;const s=t.target,o=null===(e=null==s?void 0:s.dataset)||void 0===e?void 0:e.key;if(!o)return;const n=String(null!==(i=s.value)&&void 0!==i?i:"").trim();if(!n){const t=Object.assign({},this._config);return delete t[o],void this._emitConfigChanged(t)}const r=Number(n);Number.isNaN(r)||this._emitConfigChanged(Object.assign(Object.assign({},this._config),{[o]:r}))}render(){var t,e,i;const s=null!==(t=this._config.autoplay)&&void 0!==t&&t,o=null!==(e=this._config.autoplay_seconds)&&void 0!==e?e:3,n=null!==(i=this._config.show_object_list)&&void 0!==i&&i;return yt`
       <div class="container">
-        <div class="section-title">${Xt(this.hass,"editor_playback")}</div>
+        <div class="section-title">${Qt(this.hass,"editor_playback")}</div>
 
-        <ha-formfield label=${Xt(this.hass,"editor_autoplay")}>
+        <ha-formfield label=${Qt(this.hass,"editor_autoplay")}>
           <ha-switch
             .checked=${s}
             data-key="autoplay"
@@ -643,7 +643,7 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
         </ha-formfield>
 
         <ha-textfield
-          label=${Xt(this.hass,"editor_autoplay_seconds")}
+          label=${Qt(this.hass,"editor_autoplay_seconds")}
           type="number"
           inputmode="numeric"
           min="1"
@@ -653,9 +653,9 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
           @change=${this._onNumberChange}
         ></ha-textfield>
 
-        <div class="section-title">${Xt(this.hass,"editor_display")}</div>
+        <div class="section-title">${Qt(this.hass,"editor_display")}</div>
 
-        <ha-formfield label=${Xt(this.hass,"editor_show_object_list")}>
+        <ha-formfield label=${Qt(this.hass,"editor_show_object_list")}>
           <ha-switch
             .checked=${n}
             data-key="show_object_list"
@@ -695,10 +695,10 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
       ha-formfield {
         --mdc-theme-text-primary-on-background: var(--primary-text-color);
       }
-    `}};t([Vt({attribute:!1})],te.prototype,"hass",void 0),t([Zt()],te.prototype,"_config",void 0),te=t([Bt(qt)],te);console.info("%c  AWS Face Recognition Card  \n%c  version: v@AWS Face Recognition Card@  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray"),window.customCards=window.customCards||[],window.customCards.push({type:Yt,name:"AWS Face Recognition Card",preview:!0,description:"AWS face recognition custom card (WebSocket)"});const ee="/local/amazon_face_recognition_scan",ie=["amazon_face_recognition/get_index","amazon_face_recognition/index"],se=["amazon_face_recognition/get_last_result","amazon_face_recognition/last_result"];let oe=class extends Lt{constructor(){super(...arguments),this._items=[],this._index=0,this._lastResult=null,this._error=null,this._loading=!1,this._scale=1,this._tx=0,this._ty=0,this._dragging=!1,this._scanCarsEnabled=!1,this._live=!1,this._autoplayTimer=null,this._pointers=new Map,this._start={scale:1,tx:0,ty:0},this._pinchStartDist=0,this._pinchCenter={x:0,y:0},this._lastTapTime=0,this._doubleTapDelay=300,this._hasConfig=!1,this._initDone=!1,this._unsubUpdates=null,this._warnedObsolete=!1,this._toggleLive=()=>{this._live=!this._live,this._resetZoom()},this._toggleAutoplay=()=>{const t=!this._config.autoplay;this._config=Object.assign(Object.assign({},this._config),{autoplay:t}),this._stopAutoplay(),this._startAutoplay()},this._prev=()=>{this._items.length&&(this._resetZoom(),this._index=(this._index-1+this._items.length)%this._items.length,this._preloadNeighborImages(),this._live=!1)},this._next=()=>{this._items.length&&(this._resetZoom(),this._index=(this._index+1)%this._items.length,this._preloadNeighborImages(),this._live=!1)},this._resetZoom=()=>{this._scale=1,this._tx=0,this._ty=0},this._onWheel=t=>{t.preventDefault();const e=t.currentTarget.getBoundingClientRect(),i=t.clientX-e.left,s=t.clientY-e.top,o=this._scale,n=t.deltaY>0?.9:1.1,r=this._clamp(o*n,1,6);this._tx=i-(i-this._tx)*(r/o),this._ty=s-(s-this._ty)*(r/o),this._scale=r,this._normalizeAfterZoom(),this._applyBounds()},this._onPointerDown=t=>{if("touch"===t.pointerType){const t=Date.now(),e=t-this._lastTapTime;if(this._lastTapTime=t,e>0&&e<this._doubleTapDelay)return void(this._scale>1?this._resetZoom():this._zoom2xAtCenter())}if(t.currentTarget.setPointerCapture(t.pointerId),this._pointers.set(t.pointerId,{x:t.clientX,y:t.clientY}),this._start={scale:this._scale,tx:this._tx,ty:this._ty},1===this._pointers.size&&(this._dragging=!0),2===this._pointers.size){const t=Array.from(this._pointers.values()),e=t[0].x-t[1].x,i=t[0].y-t[1].y;this._pinchStartDist=Math.hypot(e,i),this._pinchCenter={x:(t[0].x+t[1].x)/2,y:(t[0].y+t[1].y)/2}}},this._onPointerMove=t=>{var e;const i=this._pointers.get(t.pointerId);if(!i)return;const s={x:t.clientX,y:t.clientY};if(this._pointers.set(t.pointerId,s),1===this._pointers.size){if(this._scale<=1)return;return this._tx+=s.x-i.x,this._ty+=s.y-i.y,void this._applyBounds()}if(2===this._pointers.size){const t=null===(e=this.shadowRoot)||void 0===e?void 0:e.querySelector(".viewer");if(!t)return;const i=t.getBoundingClientRect(),s=Array.from(this._pointers.values()),o=s[0].x-s[1].x,n=s[0].y-s[1].y,r=Math.hypot(o,n),a=r/(this._pinchStartDist||r),l=this._clamp(this._start.scale*a,1,6),d=this._pinchCenter.x-i.left,c=this._pinchCenter.y-i.top,h=this._scale;this._tx=d-(d-this._tx)*(l/h),this._ty=c-(c-this._ty)*(l/h),this._scale=l,this._normalizeAfterZoom(),this._applyBounds()}},this._onPointerUp=t=>{this._pointers.delete(t.pointerId),0===this._pointers.size&&(this._dragging=!1)},this._onDblClick=()=>{this._resetZoom()}}set hass(t){this._hass=t,this._tryInit()}get hass(){return this._hass}static get styles(){return Kt}static getConfigElement(){return document.createElement(qt)}setConfig(t){this._hasConfig=!0,this._config=Object.assign({autoplay:!1,autoplay_seconds:3,show_object_list:!1},t),this._stopAutoplay(),this._startAutoplay(),this._tryInit()}connectedCallback(){super.connectedCallback(),this._tryInit()}disconnectedCallback(){super.disconnectedCallback(),this._stopAutoplay(),this._cleanupWs(),this._initDone=!1}_tryInit(){var t;this._initDone||this._hasConfig&&(null===(t=this._hass)||void 0===t?void 0:t.connection)&&(this._initDone=!0,this._initWsAndLoad())}async _initWsAndLoad(){var t;try{await this._loadFromWs(),await this._subscribeUpdates()}catch(e){this._error=`${Xt(this.hass,"error")}: ${null!==(t=null==e?void 0:e.message)&&void 0!==t?t:e}`}}_cleanupWs(){var t;try{null===(t=this._unsubUpdates)||void 0===t||t.call(this)}catch(t){}this._unsubUpdates=null,this._loading=!1}_downloadCurrent(){var t,e;const i=this._items.length?this._items[this._index]:null,s=null==i?void 0:i.file;let o=s?`${ee}/${encodeURIComponent(s)}?v=${s}`:"";if(!o){const i=(null===(t=this._lastResult)||void 0===t?void 0:t.image_url)||(null===(e=this._lastResult)||void 0===e?void 0:e.latest_url)||"";o=i?`${i}${i.includes("?")?"&":"?"}v=${Date.now()}`:""}if(!o)return;const n=document.createElement("a");n.href=o,n.download=s||"recognition.jpg",n.rel="noopener",n.target="_blank",document.body.appendChild(n),n.click(),n.remove()}_startAutoplay(){var t,e,i;if(!(null===(t=this._config)||void 0===t?void 0:t.autoplay))return;const s=Number(null!==(i=null===(e=this._config)||void 0===e?void 0:e.autoplay_seconds)&&void 0!==i?i:3);s>0&&(this._autoplayTimer=window.setInterval(()=>this._next(),1e3*s))}_stopAutoplay(){this._autoplayTimer&&window.clearInterval(this._autoplayTimer),this._autoplayTimer=null}async _wsSend(t){var e;if(!(null===(e=this.hass)||void 0===e?void 0:e.connection))throw new Error("No hass.connection");return await this.hass.connection.sendMessagePromise(t)}async _wsSendFirstOk(t,e){let i=null;for(const s of t)try{return await this._wsSend(Object.assign({type:s},e))}catch(t){i=t}throw null!=i?i:new Error("WebSocket call failed")}async _loadFromWs(){var t;if(!this._loading){this._loading=!0;try{const t=await this._wsSendFirstOk(ie,{limit:100}),e=[...Array.isArray(t.items)?t.items:[]].sort((t,e)=>(e.timestamp||"").localeCompare(t.timestamp||"")),i=await this._wsSendFirstOk(se,{});this._items=e,this._updatedAt=null==t?void 0:t.updated_at,this._lastResult=i||null,this._scanCarsEnabled=!!(null==i?void 0:i.scan_cars_enabled),this._error=null;const s=null==i?void 0:i.file;if(s&&e.length){const t=e.findIndex(t=>t.file===s);this._index=t>=0?t:0}else this._index=0;this._preloadNeighborImages()}catch(e){this._error=`${Xt(this.hass,"error")}: ${null!==(t=null==e?void 0:e.message)&&void 0!==t?t:e}`}finally{this._loading=!1}}}async _subscribeUpdates(){this._unsubUpdates||(this._unsubUpdates=await this.hass.connection.subscribeMessage(t=>{(null==t?void 0:t.updated_at)&&(this._updatedAt=t.updated_at),(null==t?void 0:t.last_result)&&(this._lastResult=t.last_result),this._loadFromWs(),this._resetZoom()},{type:"amazon_face_recognition/subscribe_updates"}))}_preloadNeighborImages(){if(!this._items.length)return;const t=(this._index+1)%this._items.length,e=(this._index-1+this._items.length)%this._items.length,i=t=>{var e;const i=null===(e=this._items[t])||void 0===e?void 0:e.file;if(!i)return;(new Image).src=`${ee}/${encodeURIComponent(i)}?v=${i}`};i(t),i(e)}_clamp(t,e,i){return Math.max(e,Math.min(i,t))}_normalizeAfterZoom(){this._scale<=1.001&&(this._scale=1,this._tx=0,this._ty=0)}_applyBounds(){const t=2e3;this._tx=this._clamp(this._tx,-2e3,t),this._ty=this._clamp(this._ty,-2e3,t)}_zoom2xAtCenter(){var t;const e=null===(t=this.shadowRoot)||void 0===t?void 0:t.querySelector(".viewer");if(!e)return;const i=e.getBoundingClientRect(),s=i.width/2,o=i.height/2,n=this._scale;this._tx=s-(s-this._tx)*(2/n),this._ty=o-(o-this._ty)*(2/n),this._scale=2,this._applyBounds()}getCardSize(){return 3}_imgUrlForItem(t){var e,i;const s=null==t?void 0:t.file;if(s)return`${ee}/${encodeURIComponent(s)}?v=${s}`;const o=(null===(e=this._lastResult)||void 0===e?void 0:e.image_url)||(null===(i=this._lastResult)||void 0===i?void 0:i.latest_url)||"";return o?`${o}${o.includes("?")?"&":"?"}v=${Date.now()}`:""}_renderPlatesSection(t){var e,i,s,o,n;const r=null!==(n=null!==(s=null!==(e=null==t?void 0:t.plates)&&void 0!==e?e:null===(i=this._lastResult)||void 0===i?void 0:i.plates)&&void 0!==s?s:null===(o=this._lastResult)||void 0===o?void 0:o.detected_plates)&&void 0!==n?n:[],a=Array.isArray(r)?r:[];return a.length?yt`
+    `}};t([Wt({attribute:!1})],Jt.prototype,"hass",void 0),t([Vt()],Jt.prototype,"_config",void 0),Jt=t([(t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e):((t,e)=>{const{kind:i,elements:s}=e;return{kind:i,elements:s,finisher(e){customElements.define(t,e)}}})(t,e))(Yt)],Jt);console.info("%c  AWS Face Recognition Card  \n%c  version: v@AWS Face Recognition Card@  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");const te="/local/amazon_face_recognition_scan",ee=["amazon_face_recognition/get_index","amazon_face_recognition/index"],ie=["amazon_face_recognition/get_last_result","amazon_face_recognition/last_result"];class se extends Lt{constructor(){super(...arguments),this._items=[],this._index=0,this._lastResult=null,this._error=null,this._loading=!1,this._scale=1,this._tx=0,this._ty=0,this._dragging=!1,this._scanCarsEnabled=!1,this._live=!1,this._autoplayTimer=null,this._pointers=new Map,this._start={scale:1,tx:0,ty:0},this._pinchStartDist=0,this._pinchCenter={x:0,y:0},this._lastTapTime=0,this._doubleTapDelay=300,this._hasConfig=!1,this._initDone=!1,this._unsubUpdates=null,this._warnedObsolete=!1,this._toggleLive=()=>{this._live=!this._live,this._resetZoom()},this._toggleAutoplay=()=>{const t=!this._config.autoplay;this._config=Object.assign(Object.assign({},this._config),{autoplay:t}),this._stopAutoplay(),this._startAutoplay()},this._prev=()=>{this._items.length&&(this._resetZoom(),this._index=(this._index-1+this._items.length)%this._items.length,this._preloadNeighborImages(),this._live=!1)},this._next=()=>{this._items.length&&(this._resetZoom(),this._index=(this._index+1)%this._items.length,this._preloadNeighborImages(),this._live=!1)},this._resetZoom=()=>{this._scale=1,this._tx=0,this._ty=0},this._onWheel=t=>{t.preventDefault();const e=t.currentTarget.getBoundingClientRect(),i=t.clientX-e.left,s=t.clientY-e.top,o=this._scale,n=t.deltaY>0?.9:1.1,r=this._clamp(o*n,1,6);this._tx=i-(i-this._tx)*(r/o),this._ty=s-(s-this._ty)*(r/o),this._scale=r,this._normalizeAfterZoom(),this._applyBounds()},this._onPointerDown=t=>{if("touch"===t.pointerType){const t=Date.now(),e=t-this._lastTapTime;if(this._lastTapTime=t,e>0&&e<this._doubleTapDelay)return void(this._scale>1?this._resetZoom():this._zoom2xAtCenter())}if(t.currentTarget.setPointerCapture(t.pointerId),this._pointers.set(t.pointerId,{x:t.clientX,y:t.clientY}),this._start={scale:this._scale,tx:this._tx,ty:this._ty},1===this._pointers.size&&(this._dragging=!0),2===this._pointers.size){const t=Array.from(this._pointers.values()),e=t[0].x-t[1].x,i=t[0].y-t[1].y;this._pinchStartDist=Math.hypot(e,i),this._pinchCenter={x:(t[0].x+t[1].x)/2,y:(t[0].y+t[1].y)/2}}},this._onPointerMove=t=>{var e;const i=this._pointers.get(t.pointerId);if(!i)return;const s={x:t.clientX,y:t.clientY};if(this._pointers.set(t.pointerId,s),1===this._pointers.size){if(this._scale<=1)return;return this._tx+=s.x-i.x,this._ty+=s.y-i.y,void this._applyBounds()}if(2===this._pointers.size){const t=null===(e=this.shadowRoot)||void 0===e?void 0:e.querySelector(".viewer");if(!t)return;const i=t.getBoundingClientRect(),s=Array.from(this._pointers.values()),o=s[0].x-s[1].x,n=s[0].y-s[1].y,r=Math.hypot(o,n),a=r/(this._pinchStartDist||r),l=this._clamp(this._start.scale*a,1,6),d=this._pinchCenter.x-i.left,c=this._pinchCenter.y-i.top,h=this._scale;this._tx=d-(d-this._tx)*(l/h),this._ty=c-(c-this._ty)*(l/h),this._scale=l,this._normalizeAfterZoom(),this._applyBounds()}},this._onPointerUp=t=>{this._pointers.delete(t.pointerId),0===this._pointers.size&&(this._dragging=!1)},this._onDblClick=()=>{this._resetZoom()}}set hass(t){this._hass=t,this._tryInit()}get hass(){return this._hass}static get styles(){return Ft}static getConfigElement(){return document.createElement(Yt)}setConfig(t){this._hasConfig=!0,this._config=Object.assign({autoplay:!1,autoplay_seconds:3,show_object_list:!1},t),this._stopAutoplay(),this._startAutoplay(),this._tryInit()}connectedCallback(){super.connectedCallback(),this._tryInit()}disconnectedCallback(){super.disconnectedCallback(),this._stopAutoplay(),this._cleanupWs(),this._initDone=!1}_tryInit(){var t;this._initDone||this._hasConfig&&(null===(t=this._hass)||void 0===t?void 0:t.connection)&&(this._initDone=!0,this._initWsAndLoad())}async _initWsAndLoad(){var t;try{await this._loadFromWs(),await this._subscribeUpdates()}catch(e){this._error=`${Qt(this.hass,"error")}: ${null!==(t=null==e?void 0:e.message)&&void 0!==t?t:e}`}}_cleanupWs(){var t;try{null===(t=this._unsubUpdates)||void 0===t||t.call(this)}catch(t){}this._unsubUpdates=null,this._loading=!1}_downloadCurrent(){var t,e;const i=this._items.length?this._items[this._index]:null,s=null==i?void 0:i.file;let o=s?`${te}/${encodeURIComponent(s)}?v=${s}`:"";if(!o){const i=(null===(t=this._lastResult)||void 0===t?void 0:t.image_url)||(null===(e=this._lastResult)||void 0===e?void 0:e.latest_url)||"";o=i?`${i}${i.includes("?")?"&":"?"}v=${Date.now()}`:""}if(!o)return;const n=document.createElement("a");n.href=o,n.download=s||"recognition.jpg",n.rel="noopener",n.target="_blank",document.body.appendChild(n),n.click(),n.remove()}_startAutoplay(){var t,e,i;if(!(null===(t=this._config)||void 0===t?void 0:t.autoplay))return;const s=Number(null!==(i=null===(e=this._config)||void 0===e?void 0:e.autoplay_seconds)&&void 0!==i?i:3);s>0&&(this._autoplayTimer=window.setInterval(()=>this._next(),1e3*s))}_stopAutoplay(){this._autoplayTimer&&window.clearInterval(this._autoplayTimer),this._autoplayTimer=null}async _wsSend(t){var e;if(!(null===(e=this.hass)||void 0===e?void 0:e.connection))throw new Error("No hass.connection");return await this.hass.connection.sendMessagePromise(t)}async _wsSendFirstOk(t,e){let i=null;for(const s of t)try{return await this._wsSend(Object.assign({type:s},e))}catch(t){i=t}throw null!=i?i:new Error("WebSocket call failed")}async _loadFromWs(){var t;if(!this._loading){this._loading=!0;try{const t=await this._wsSendFirstOk(ee,{limit:100}),e=[...Array.isArray(t.items)?t.items:[]].sort((t,e)=>(e.timestamp||"").localeCompare(t.timestamp||"")),i=await this._wsSendFirstOk(ie,{});this._items=e,this._updatedAt=null==t?void 0:t.updated_at,this._lastResult=i||null,this._scanCarsEnabled=!!(null==i?void 0:i.scan_cars_enabled),this._error=null;const s=null==i?void 0:i.file;if(s&&e.length){const t=e.findIndex(t=>t.file===s);this._index=t>=0?t:0}else this._index=0;this._preloadNeighborImages()}catch(e){this._error=`${Qt(this.hass,"error")}: ${null!==(t=null==e?void 0:e.message)&&void 0!==t?t:e}`}finally{this._loading=!1}}}async _subscribeUpdates(){this._unsubUpdates||(this._unsubUpdates=await this.hass.connection.subscribeMessage(t=>{(null==t?void 0:t.updated_at)&&(this._updatedAt=t.updated_at),(null==t?void 0:t.last_result)&&(this._lastResult=t.last_result),this._loadFromWs(),this._resetZoom()},{type:"amazon_face_recognition/subscribe_updates"}))}_preloadNeighborImages(){if(!this._items.length)return;const t=(this._index+1)%this._items.length,e=(this._index-1+this._items.length)%this._items.length,i=t=>{var e;const i=null===(e=this._items[t])||void 0===e?void 0:e.file;if(!i)return;(new Image).src=`${te}/${encodeURIComponent(i)}?v=${i}`};i(t),i(e)}_clamp(t,e,i){return Math.max(e,Math.min(i,t))}_normalizeAfterZoom(){this._scale<=1.001&&(this._scale=1,this._tx=0,this._ty=0)}_applyBounds(){const t=2e3;this._tx=this._clamp(this._tx,-2e3,t),this._ty=this._clamp(this._ty,-2e3,t)}_zoom2xAtCenter(){var t;const e=null===(t=this.shadowRoot)||void 0===t?void 0:t.querySelector(".viewer");if(!e)return;const i=e.getBoundingClientRect(),s=i.width/2,o=i.height/2,n=this._scale;this._tx=s-(s-this._tx)*(2/n),this._ty=o-(o-this._ty)*(2/n),this._scale=2,this._applyBounds()}getCardSize(){return 3}_imgUrlForItem(t){var e,i;const s=null==t?void 0:t.file;if(s)return`${te}/${encodeURIComponent(s)}?v=${s}`;const o=(null===(e=this._lastResult)||void 0===e?void 0:e.image_url)||(null===(i=this._lastResult)||void 0===i?void 0:i.latest_url)||"";return o?`${o}${o.includes("?")?"&":"?"}v=${Date.now()}`:""}_renderPlatesSection(t){var e,i,s,o,n;const r=null!==(n=null!==(s=null!==(e=null==t?void 0:t.plates)&&void 0!==e?e:null===(i=this._lastResult)||void 0===i?void 0:i.plates)&&void 0!==s?s:null===(o=this._lastResult)||void 0===o?void 0:o.detected_plates)&&void 0!==n?n:[],a=Array.isArray(r)?r:[];return a.length?yt`
       <div class="sectionCard">
         <div class="sectionHead">
-          <div class="sectionTitle">${Xt(this.hass,"plates")}</div>
+          <div class="sectionTitle">${Qt(this.hass,"plates")}</div>
           <div class="sectionHint">${a.length}</div>
         </div>
 
@@ -726,11 +726,11 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
         <div class="card">
           <div class="topline">
             <div>
-              <b>${Xt(this.hass,"title")}</b>
+              <b>${Qt(this.hass,"title")}</b>
               <span class="muted">${f?`• ${this._index+1}/${f}`:""}</span>
             </div>
             <div class="muted" style="font-size: 12px;">
-              ${this._updatedAt?`${Xt(this.hass,"updated")}: ${Jt(this.hass,this._updatedAt)}`:""}
+              ${this._updatedAt?`${Qt(this.hass,"updated")}: ${Xt(this.hass,this._updatedAt)}`:""}
             </div>
           </div>
 
@@ -749,23 +749,23 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
                         .hass=${this.hass}
                         .stateObj=${x}
                       ></ha-camera-stream>
-                    `:yt`<div class="muted" style="padding:16px;">${Xt(this.hass,"no_camera")}</div>`:w?yt`
+                    `:yt`<div class="muted" style="padding:16px;">${Qt(this.hass,"no_camera")}</div>`:w?yt`
                       <img
                         class="zoom-img ${this._dragging?"dragging":""}"
                         src="${w}"
                         alt="snapshot"
                         style="transform: translate(${this._tx}px, ${this._ty}px) scale(${this._scale});"
                       />
-                    `:yt`<div class="muted" style="padding:16px;">${Xt(this.hass,"no_image")}</div>`}
+                    `:yt`<div class="muted" style="padding:16px;">${Qt(this.hass,"no_image")}</div>`}
 
           </div>
 
           <div class="controls">
             <div class="toolgroup" role="group" aria-label="Navigation">
-              <button class="iconbtn" @click=${this._prev} ?disabled=${!f} title=${Xt(this.hass,"prev")}>
+              <button class="iconbtn" @click=${this._prev} ?disabled=${!f} title=${Qt(this.hass,"prev")}>
                 <ha-icon icon="mdi:chevron-left"></ha-icon>
               </button>
-              <button class="iconbtn" @click=${this._next} ?disabled=${!f} title=${Xt(this.hass,"next")}>
+              <button class="iconbtn" @click=${this._next} ?disabled=${!f} title=${Qt(this.hass,"next")}>
                 <ha-icon icon="mdi:chevron-right"></ha-icon>
               </button>
             </div>
@@ -776,7 +776,7 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
                       Reset zoom should never wrap/resize the toolbar.
                       Keep it icon-only (tooltip provides the label).
                     -->
-                    <button class="iconbtn resetbtn" @click=${this._resetZoom} title=${Xt(this.hass,"reset_zoom")}>
+                    <button class="iconbtn resetbtn" @click=${this._resetZoom} title=${Qt(this.hass,"reset_zoom")}>
                       <ha-icon icon="mdi:magnify-minus-outline"></ha-icon>
                     </button>
                   `:""}
@@ -785,11 +785,11 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
                 class="pillbtn livebtn"
                 @click=${this._toggleLive}
                 ?disabled=${!A&&!this._live}
-                title=${this._live?Xt(this.hass,"live_to_snapshot"):Xt(this.hass,"live_view")}
+                title=${this._live?Qt(this.hass,"live_to_snapshot"):Qt(this.hass,"live_view")}
               >
                 <span class="livebadge" aria-hidden="true"></span>
                 <ha-icon icon=${this._live?"mdi:arrow-left":"mdi:cctv"}></ha-icon>
-                <span>${this._live?Xt(this.hass,"back"):"LIVE"}</span>
+                <span>${this._live?Qt(this.hass,"back"):"LIVE"}</span>
               </button>
             </div>
 
@@ -798,7 +798,7 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
                 class="iconbtn"
                 @click=${()=>this._loadFromWs()}
                 ?disabled=${this._loading}
-                title=${Xt(this.hass,"refresh")}
+                title=${Qt(this.hass,"refresh")}
               >
                 <ha-icon
                   class=${this._loading?"afr-spin":""}
@@ -810,7 +810,7 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
                 class="iconbtn"
                 @click=${this._toggleAutoplay}
                 ?disabled=${!f}
-                title=${(null===(v=this._config)||void 0===v?void 0:v.autoplay)?Xt(this.hass,"pause"):Xt(this.hass,"play")}
+                title=${(null===(v=this._config)||void 0===v?void 0:v.autoplay)?Qt(this.hass,"pause"):Qt(this.hass,"play")}
               >
                 <ha-icon icon=${(null===(m=this._config)||void 0===m?void 0:m.autoplay)?"mdi:pause":"mdi:play"}></ha-icon>
               </button>
@@ -819,7 +819,7 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
                 class="iconbtn"
                 @click=${this._downloadCurrent}
                 ?disabled=${!w}
-                title=${Xt(this.hass,"download")}
+                title=${Qt(this.hass,"download")}
               >
                 <ha-icon icon="mdi:download"></ha-icon>
               </button>
@@ -830,22 +830,22 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
                 <div class="sectionCard">
                   <div class="metaGrid">
                     <div class="kv">
-                      <div class="kvLabel">${Xt(this.hass,"time")}</div>
+                      <div class="kvLabel">${Qt(this.hass,"time")}</div>
                       <div class="kvValue">
                         <ha-icon icon="mdi:clock-outline"></ha-icon>
-                        <span>${Jt(this.hass,(null==y?void 0:y.timestamp)||(null===(b=this._lastResult)||void 0===b?void 0:b.timestamp))}</span>
+                        <span>${Xt(this.hass,(null==y?void 0:y.timestamp)||(null===(b=this._lastResult)||void 0===b?void 0:b.timestamp))}</span>
                       </div>
                     </div>
 
                     <div class="kv">
-                      <div class="kvLabel">${Xt(this.hass,"unknown_person_found")}</div>
+                      <div class="kvLabel">${Qt(this.hass,"unknown_person_found")}</div>
                       <div class="kvValue">
                         ${S?yt`<span class="badge bad">
                               <ha-icon icon="mdi:alert-circle"></ha-icon>
-                              <span>${Xt(this.hass,"status_unknown")}</span>
+                              <span>${Qt(this.hass,"status_unknown")}</span>
                             </span>`:yt`<span class="badge ok">
                               <ha-icon icon="mdi:check-circle"></ha-icon>
-                              <span>${Xt(this.hass,"status_clear")}</span>
+                              <span>${Qt(this.hass,"status_clear")}</span>
                             </span>`}
                       </div>
                     </div>
@@ -854,21 +854,21 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
                   <div class="divider"></div>
 
                   <div class="sectionLine">
-                    <div class="sectionK">${Xt(this.hass,"recognized")}</div>
+                    <div class="sectionK">${Qt(this.hass,"recognized")}</div>
                     <div class="sectionV">
                       ${k.length?yt`<div class="chips">
                             ${k.map(t=>yt`<span class="chip chip--person"><ha-icon icon="mdi:account"></ha-icon>${t}</span>`)}
-                          </div>`:yt`<span class="badge neutral"><ha-icon icon="mdi:account-off"></ha-icon>${Xt(this.hass,"none")}</span>`}
+                          </div>`:yt`<span class="badge neutral"><ha-icon icon="mdi:account-off"></ha-icon>${Qt(this.hass,"none")}</span>`}
                     </div>
                   </div>
 
                   ${C?yt`
                         <div class="sectionLine" style="margin-top:10px;">
-                          <div class="sectionK">${Xt(this.hass,"objects")}</div>
+                          <div class="sectionK">${Qt(this.hass,"objects")}</div>
                           <div class="sectionV">
                             ${E.length?yt`<div class="chips">
                                   ${E.map(([t,e])=>yt`<span class="chip chip--object">${t}<span class="chipCount">${e}</span></span>`)}
-                                </div>`:yt`<span class="badge neutral"><ha-icon icon="mdi:cube-outline"></ha-icon>${Xt(this.hass,"none")}</span>`}
+                                </div>`:yt`<span class="badge neutral"><ha-icon icon="mdi:cube-outline"></ha-icon>${Qt(this.hass,"none")}</span>`}
                           </div>
                         </div>
                       `:""}
@@ -878,4 +878,4 @@ const Bt=t=>e=>"function"==typeof e?((t,e)=>(customElements.define(t,e),e))(t,e)
           ${this._error?yt`<div class="error">${this._error}</div>`:""}
         </div>
       </ha-card>
-    `}};t([Vt({attribute:!1})],oe.prototype,"_config",void 0),t([Vt({attribute:!1})],oe.prototype,"hass",null),t([Zt()],oe.prototype,"_items",void 0),t([Zt()],oe.prototype,"_updatedAt",void 0),t([Zt()],oe.prototype,"_index",void 0),t([Zt()],oe.prototype,"_lastResult",void 0),t([Zt()],oe.prototype,"_error",void 0),t([Zt()],oe.prototype,"_loading",void 0),t([Zt()],oe.prototype,"_scale",void 0),t([Zt()],oe.prototype,"_tx",void 0),t([Zt()],oe.prototype,"_ty",void 0),t([Zt()],oe.prototype,"_dragging",void 0),t([Zt()],oe.prototype,"_scanCarsEnabled",void 0),t([Zt()],oe.prototype,"_live",void 0),oe=t([Bt(Yt)],oe);export{oe as AwsFaceRecognitionCard};
+    `}}t([Wt({attribute:!1})],se.prototype,"_config",void 0),t([Wt({attribute:!1})],se.prototype,"hass",null),t([Vt()],se.prototype,"_items",void 0),t([Vt()],se.prototype,"_updatedAt",void 0),t([Vt()],se.prototype,"_index",void 0),t([Vt()],se.prototype,"_lastResult",void 0),t([Vt()],se.prototype,"_error",void 0),t([Vt()],se.prototype,"_loading",void 0),t([Vt()],se.prototype,"_scale",void 0),t([Vt()],se.prototype,"_tx",void 0),t([Vt()],se.prototype,"_ty",void 0),t([Vt()],se.prototype,"_dragging",void 0),t([Vt()],se.prototype,"_scanCarsEnabled",void 0),t([Vt()],se.prototype,"_live",void 0),customElements.get(Kt)||customElements.define(Kt,se),window.customCards=window.customCards||[],window.customCards.some(t=>(null==t?void 0:t.type)===Kt)||window.customCards.push({type:Kt,name:"AWS Face Recognition Card",preview:!0,description:"AWS face recognition custom card (WebSocket)"});export{se as AwsFaceRecognitionCard};
