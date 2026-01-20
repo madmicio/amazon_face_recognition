@@ -1,6 +1,8 @@
 # Amazon Face Recognition for Home Assistant
 
 ## A complete AI-powered recognition ecosystem for Home Assistant
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+[![buymeacoffee_badge](https://img.shields.io/badge/Donate-buymeacoffe-ff813f?style=flat)](https://www.buymeacoffee.com/madmicio)
 
 ### Demo Video
 click to play
