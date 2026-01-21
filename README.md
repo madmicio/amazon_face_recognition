@@ -169,6 +169,31 @@ After restart:
 
 ---
 
+## Lovelace Card – Resource setup
+
+Amazon Face Recognition automatically loads its frontend files at startup.
+In most cases, no manual action is required.
+
+However, due to how Home Assistant and the Companion App handle frontend caching,
+some environments may fail to load the Lovelace card reliably
+(e.g. after app resume or cold start).
+
+### If the Lovelace card shows “Configuration error”
+
+Please add the card resource manually:
+
+1. Go to **Settings → Dashboards → Resources**
+2. Add a new resource:
+     ```yaml
+     url: /amazon_face_recognition/frontend/aws-face-recognition-card.js
+     type: module
+     ```
+3. Reload resources or restart Home Assistant
+
+This makes the card fully persistent and eliminates random loading issues
+in the Home Assistant Companion App.
+
+
 ## Documentation
 
 📘 **Full documentation is available in the GitHub Wiki**:
