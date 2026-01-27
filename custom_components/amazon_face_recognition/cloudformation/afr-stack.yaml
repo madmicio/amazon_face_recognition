@@ -72,7 +72,11 @@ Resources:
                   - rekognition:SearchFacesByImage
                   - rekognition:IndexFaces
                   - rekognition:DeleteFaces
+                  - rekognition:DetectFaces
+                  - rekognition:DetectLabels
+                  - rekognition:DetectText
                 Resource: "*"
+
 
 
   AfrAccessKey:
