@@ -33,6 +33,13 @@ Resources:
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
+              # ---- STS: allow identity check (used by AFR self-test) ----
+              - Sid: StsGetCallerIdentity
+                Effect: Allow
+                Action:
+                  - sts:GetCallerIdentity
+                Resource: "*"
+
               # ---- S3: list only within Prefix ----
               - Sid: S3ListWithinPrefix
                 Effect: Allow
@@ -65,7 +72,8 @@ Resources:
                   - rekognition:SearchFacesByImage
                   - rekognition:IndexFaces
                   - rekognition:DeleteFaces
-                Resource: !Sub "arn:aws:rekognition:${AWS::Region}:${AWS::AccountId}:collection/${CollectionId}"
+                Resource: "*"
+
 
   AfrAccessKey:
     Type: AWS::IAM::AccessKey
