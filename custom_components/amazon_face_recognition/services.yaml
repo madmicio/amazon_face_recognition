@@ -51,3 +51,15 @@ delete_all_faces:
   name: Delete all faces
   description: Elimina tutti i volti dalla collection.
   fields: {}
+
+aws_selftest:
+  name: AWS selftest
+  description: Runs a quick AWS connectivity test (STS + Rekognition + optional S3).
+  fields:
+    entry_id:
+      name: Entry ID
+      description: Optional config entry id (only needed if you have multiple AFR entries).
+      example: "abcd1234efgh5678"
+      required: false
+      selector:
+        text:

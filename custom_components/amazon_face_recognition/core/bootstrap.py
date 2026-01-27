@@ -19,6 +19,7 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
+from ..aws.selftest import run_aws_selftest
 from homeassistant.components.camera import async_get_image
 from homeassistant.components.http import StaticPathConfig
 import homeassistant.helpers.config_validation as cv
@@ -68,6 +69,8 @@ except Exception:  # pragma: no cover
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
+
+
 
 
 async def _mount_static(hass: HomeAssistant) -> None:
@@ -325,6 +328,59 @@ def _register_services_once(hass: HomeAssistant) -> None:
             return
         await svc_delete_all_faces(hass, entry2, call)
 
+    # ============================================================
+    # ✅ NEW: AWS self-test service
+    # ============================================================
+    async def _svc_aws_selftest(call: ServiceCall) -> None:
+        entry2, _ = _resolve_entry_and_processor(hass, call)
+        if entry2 is None:
+            _LOGGER.error(
+                "%s: aws_selftest: unable to resolve entry (pass entry_id if multiple entries).",
+                DOMAIN,
+            )
+            return
+
+        region = entry2.data.get(CONF_REGION_NAME)
+        ak = entry2.data.get(CONF_AWS_ACCESS_KEY_ID)
+        sk = entry2.data.get(CONF_AWS_SECRET_ACCESS_KEY)
+        collection_id = (entry2.data.get(CONF_COLLECTION_ID) or "").strip()
+
+        opt = _get_options(entry2)
+        bucket = (opt.get(CONF_S3_BUCKET) or entry2.data.get(CONF_S3_BUCKET) or "").strip() or None
+        prefix = (opt.get(CONF_CLOUD_GALLERY_PREFIX) or AFR_SCAN_DIRNAME).strip("/") or AFR_SCAN_DIRNAME
+
+        result = await hass.async_add_executor_job(
+            lambda: run_aws_selftest(
+                aws_access_key_id=ak,
+                aws_secret_access_key=sk,
+                region_name=region,
+                bucket=bucket,
+                prefix=prefix,
+                collection_id=collection_id,
+            )
+        )
+
+        # Emit event for debugging in Developer Tools → Events
+        hass.bus.async_fire(
+            f"{DOMAIN}.aws_selftest",
+            {
+                "entry_id": entry2.entry_id,
+                "ok": result.ok,
+                "error": result.error,
+                "detail": result.detail,
+                "data": result.data,
+            },
+        )
+
+        # Optional: also log a one-line result
+        if result.ok:
+            _LOGGER.info("%s: aws_selftest OK (%s)", DOMAIN, result.data)
+        else:
+            _LOGGER.warning("%s: aws_selftest FAILED (%s) %s", DOMAIN, result.error, result.detail)
+
+    # ------------------------------------------------------------
+    # Register services
+    # ------------------------------------------------------------
     hass.services.async_register(
         DOMAIN,
         "scan",
@@ -351,7 +407,15 @@ def _register_services_once(hass: HomeAssistant) -> None:
         vol.Schema({vol.Optional("entry_id"): cv.string}),
     )
 
+    hass.services.async_register(
+        DOMAIN,
+        "aws_selftest",
+        _svc_aws_selftest,
+        vol.Schema({vol.Optional("entry_id"): cv.string}),
+    )
+
     data["_services_registered"] = True
+
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:

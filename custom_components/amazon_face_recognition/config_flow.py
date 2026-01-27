@@ -6,7 +6,7 @@ from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 from homeassistant.core import callback
-
+from .aws.selftest import run_aws_selftest
 
 from .const import (
     DOMAIN,
@@ -106,14 +106,60 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
         if user_input is not None:
-            # normalize optional S3 bucket
+            # -----------------------------
+            # Normalize optional S3 bucket
+            # -----------------------------
             bucket = (user_input.get(CONF_S3_BUCKET) or "").strip()
             if bucket:
                 user_input[CONF_S3_BUCKET] = bucket
             else:
                 user_input.pop(CONF_S3_BUCKET, None)
 
+            # -----------------------------
+            # Normalize collection id
+            # -----------------------------
             collection = (user_input.get(CONF_COLLECTION_ID) or "").strip()
+            user_input[CONF_COLLECTION_ID] = collection
+
+            # -----------------------------
+            # BLOCK SETUP if AWS self-test fails
+            # - STS auth
+            # - Rekognition describe collection
+            # - Optional S3 put/delete under AFR_SCAN_DIRNAME (if bucket provided)
+            # -----------------------------
+            prefix_for_test = AFR_SCAN_DIRNAME
+
+            test = await self.hass.async_add_executor_job(
+                lambda: run_aws_selftest(
+                    aws_access_key_id=user_input[CONF_AWS_ACCESS_KEY_ID],
+                    aws_secret_access_key=user_input[CONF_AWS_SECRET_ACCESS_KEY],
+                    region_name=user_input[CONF_REGION_NAME],
+                    bucket=user_input.get(CONF_S3_BUCKET),  # may be None
+                    prefix=prefix_for_test,
+                    collection_id=collection,
+                )
+            )
+
+            if not test.ok:
+                # Map to config flow errors (must exist in strings.json)
+                if test.error == "invalid_auth":
+                    errors["base"] = "invalid_auth"
+                elif test.error == "collection_not_found":
+                    errors["base"] = "collection_not_found"
+                elif test.error == "bucket_not_found":
+                    errors["base"] = "bucket_not_found"
+                elif test.error == "wrong_region":
+                    errors["base"] = "wrong_region"
+                elif test.error == "access_denied":
+                    errors["base"] = "access_denied"
+                else:
+                    errors["base"] = "cannot_connect"
+
+                return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
+
+            # -----------------------------
+            # Unique ID (after validation)
+            # -----------------------------
             unique_id = f"{user_input[CONF_REGION_NAME]}::{collection}"
             await self.async_set_unique_id(unique_id)
             self._abort_if_unique_id_configured()

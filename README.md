@@ -194,6 +194,11 @@ This makes the card fully persistent and eliminates random loading issues
 in the Home Assistant Companion App.
 
 
+[![AWS Setup Guide](images/aws_setup.png)](https://github.com/madmicio/amazon_face_recognition/wiki/AWS-Setup)
+
+
+
+
 ## Documentation
 
 📘 **Full documentation is available in the GitHub Wiki**:

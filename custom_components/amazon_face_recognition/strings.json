@@ -2,51 +2,59 @@
   "config": {
     "step": {
       "user": {
-        "title": "Configura Amazon Face Recognition",
-        "description": "Inserisci credenziali AWS e parametri base.",
+        "title": "Configure Amazon Face Recognition",
+        "description": "Enter AWS credentials and basic parameters.",
         "data": {
           "aws_access_key_id": "AWS Access Key ID",
           "aws_secret_access_key": "AWS Secret Access Key",
-          "region_name": "Regione AWS",
-          "collection_id": "Collection ID (opzionale)"
+          "region_name": "AWS Region",
+          "collection_id": "Collection ID (optional)"
         }
       }
     },
     "abort": {
-      "already_configured": "Questa configurazione esiste già."
+      "already_configured": "This configuration already exists."
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to AWS. Check the region and network connectivity.",
+      "invalid_auth": "Invalid AWS credentials.",
+      "access_denied": "Insufficient permissions (IAM). Check the CloudFormation stack or policy.",
+      "bucket_not_found": "S3 bucket not found. Check BucketName and Region from the Outputs.",
+      "wrong_region": "Incorrect region: the bucket exists but is in a different region.",
+      "collection_not_found": "Rekognition Collection not found. Check the CollectionId from the Outputs."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Opzioni",
-        "description": "Filtri + salvataggio snapshot + overlay + veicoli/targhe.",
+        "title": "Options",
+        "description": "Filters + snapshot storage + overlays + vehicles/plates.",
         "data": {
-          "max_saved_files": "Numero massimo snapshot",
-          "save_file_format": "Formato file (jpg/png)",
-          "save_timestamped_file": "Salva file timestamped",
-          "always_save_latest_file": "Salva anche recognition_latest",
-          "show_boxes": "Disegna box",
-          "s3_bucket": "Bucket S3 (opzionale)",
-          "cloud_gallery_enabled": "Abilita integrazione S3",
-          "cloud_gallery_prefix": "Prefix S3",
-          "cloud_gallery_sync_on_startup": "Sincronizza da S3 all'avvio",
-          "cloud_scan_upload_enabled": "Carica su S3 i file dello scan (snapshot/index)",
+          "max_saved_files": "Maximum number of snapshots",
+          "save_file_format": "File format (jpg/png)",
+          "save_timestamped_file": "Save timestamped files",
+          "always_save_latest_file": "Also save recognition_latest",
+          "show_boxes": "Draw bounding boxes",
+          "s3_bucket": "S3 bucket (optional)",
+          "cloud_gallery_enabled": "Enable S3 integration",
+          "cloud_gallery_prefix": "S3 prefix",
+          "cloud_gallery_sync_on_startup": "Sync from S3 on startup",
+          "cloud_scan_upload_enabled": "Upload scan files to S3 (snapshots/index)",
 
-          "label_font_level": "Dimensione font label",
-          "max_red_boxes": "Numero massimo box rossi",
-          "min_red_box_area_pct": "Area minima box rossi (%)",
+          "label_font_level": "Label font size",
+          "max_red_boxes": "Maximum number of red boxes",
+          "min_red_box_area_pct": "Minimum red box area (%)",
 
-          "default_min_confidence": "Confidenza minima default",
-          "targets_confidence": "Confidenza per target (dict: label->min_conf)",
-          "exclude_targets": "Target da escludere (lista)",
-          "excluded_object_labels": "Label escluse dal summary (lista)",
+          "default_min_confidence": "Default minimum confidence",
+          "targets_confidence": "Confidence per target (dict: label → min_conf)",
+          "exclude_targets": "Targets to exclude (list)",
+          "excluded_object_labels": "Labels excluded from the summary (list)",
 
-          "aws_api_cost": "Costo stimato per chiamata AWS",
+          "aws_api_cost": "Estimated cost per AWS call",
 
-          "scan_cars": "Analizza veicoli/targhe",
-          "vehicle_area_abs_min": "Area minima veicolo (%)",
-          "max_vehicles_to_scan": "Max veicoli da analizzare"
+          "scan_cars": "Analyze vehicles/plates",
+          "vehicle_area_abs_min": "Minimum vehicle area (%)",
+          "max_vehicles_to_scan": "Maximum vehicles to analyze"
         }
       }
     }
