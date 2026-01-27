@@ -1,0 +1,216 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  AFR - One-click provisioning: S3 bucket + IAM user/keys + Rekognition Collection (CollectionId output).
+
+Parameters:
+  Prefix:
+    Type: String
+    Default: amazon_face_recognition_scan
+    Description: "S3 prefix (folder) used by AFR inside the bucket (no leading/trailing slash)."
+  CollectionId:
+    Type: String
+    Default: afr-faces
+    Description: "Rekognition CollectionId to create and use."
+
+Resources:
+  AfrBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "afr-${AWS::AccountId}-${AWS::Region}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+
+  # (Optional but nice) explicit public access block resource; the above is usually enough.
+  AfrBucketPublicAccessBlock:
+    Type: AWS::S3::BucketPublicAccessBlock
+    Properties:
+      Bucket: !Ref AfrBucket
+      BlockPublicAcls: true
+      IgnorePublicAcls: true
+      BlockPublicPolicy: true
+      RestrictPublicBuckets: true
+
+  AfrUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Sub "afr-${AWS::AccountId}-${AWS::Region}"
+      Policies:
+        - PolicyName: afr-s3-rekognition-least-priv
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # ---- S3: list only within Prefix ----
+              - Sid: S3ListWithinPrefix
+                Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !GetAtt AfrBucket.Arn
+                Condition:
+                  StringLike:
+                    s3:prefix:
+                      - !Sub "${Prefix}/*"
+                      - !Sub "${Prefix}"
+
+              # ---- S3: read/write objects only within Prefix ----
+              - Sid: S3ObjectRWWithinPrefix
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:GetObjectTagging
+                  - s3:PutObjectTagging
+                Resource: !Sub "${AfrBucket.Arn}/${Prefix}/*"
+
+              # ---- Rekognition: use the collection ----
+              - Sid: RekognitionUseCollection
+                Effect: Allow
+                Action:
+                  - rekognition:DescribeCollection
+                  - rekognition:ListFaces
+                  - rekognition:SearchFacesByImage
+                  - rekognition:IndexFaces
+                  - rekognition:DeleteFaces
+                Resource: !Sub "arn:aws:rekognition:${AWS::Region}:${AWS::AccountId}:collection/${CollectionId}"
+
+  AfrAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref AfrUser
+
+  # ---- Lambda (Custom Resource) to create/delete Rekognition Collection ----
+  AfrRekognitionCollectionLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "afr-rekog-cfn-${AWS::AccountId}-${AWS::Region}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: afr-rekog-collection-mgmt
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - rekognition:CreateCollection
+                  - rekognition:DeleteCollection
+                  - rekognition:DescribeCollection
+                Resource: !Sub "arn:aws:rekognition:${AWS::Region}:${AWS::AccountId}:collection/${CollectionId}"
+
+  AfrRekognitionCollectionLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "afr-rekog-collection-cfn-${AWS::AccountId}-${AWS::Region}"
+      Runtime: python3.12
+      Handler: index.handler
+      Role: !GetAtt AfrRekognitionCollectionLambdaRole.Arn
+      Timeout: 60
+      Code:
+        ZipFile: |
+          import json
+          import boto3
+          import urllib.request
+
+          rek = boto3.client("rekognition")
+
+          def send(event, context, status, data=None, physical_id=None, reason=None):
+              resp_url = event["ResponseURL"]
+              body = {
+                  "Status": status,
+                  "Reason": reason or f"See CloudWatch Log Stream: {context.log_stream_name}",
+                  "PhysicalResourceId": physical_id or context.log_stream_name,
+                  "StackId": event["StackId"],
+                  "RequestId": event["RequestId"],
+                  "LogicalResourceId": event["LogicalResourceId"],
+                  "NoEcho": False,
+                  "Data": data or {}
+              }
+              req = urllib.request.Request(
+                  resp_url,
+                  data=json.dumps(body).encode("utf-8"),
+                  headers={"content-type": "", "content-length": str(len(json.dumps(body)))},
+                  method="PUT",
+              )
+              with urllib.request.urlopen(req) as r:
+                  r.read()
+
+          def handler(event, context):
+              props = event.get("ResourceProperties", {})
+              collection_id = props.get("CollectionId")
+              if not collection_id:
+                  send(event, context, "FAILED", reason="Missing CollectionId")
+                  return
+
+              req_type = event.get("RequestType")
+              physical_id = f"rekognition-collection-{collection_id}"
+
+              try:
+                  if req_type in ("Create", "Update"):
+                      # Create if not exists
+                      try:
+                          rek.describe_collection(CollectionId=collection_id)
+                      except rek.exceptions.ResourceNotFoundException:
+                          rek.create_collection(CollectionId=collection_id)
+
+                      data = {"CollectionId": collection_id}
+                      send(event, context, "SUCCESS", data=data, physical_id=physical_id)
+                      return
+
+                  if req_type == "Delete":
+                      # Delete if exists
+                      try:
+                          rek.delete_collection(CollectionId=collection_id)
+                      except rek.exceptions.ResourceNotFoundException:
+                          pass
+                      send(event, context, "SUCCESS", data={"CollectionId": collection_id}, physical_id=physical_id)
+                      return
+
+                  send(event, context, "FAILED", reason=f"Unsupported RequestType {req_type}", physical_id=physical_id)
+
+              except Exception as e:
+                  send(event, context, "FAILED", reason=str(e), physical_id=physical_id)
+
+  AfrRekognitionCollection:
+    Type: Custom::AfrRekognitionCollection
+    Properties:
+      ServiceToken: !GetAtt AfrRekognitionCollectionLambda.Arn
+      CollectionId: !Ref CollectionId
+
+Outputs:
+  AwsRegion:
+    Description: "AWS Region used by this stack."
+    Value: !Ref "AWS::Region"
+
+  BucketName:
+    Description: "S3 Bucket created for AFR."
+    Value: !Ref AfrBucket
+
+  Prefix:
+    Description: "S3 prefix (folder) to use inside the bucket."
+    Value: !Ref Prefix
+
+  RekognitionCollectionId:
+    Description: "Rekognition CollectionId created and used by AFR."
+    Value: !GetAtt AfrRekognitionCollection.CollectionId
+
+  IamUserName:
+    Description: "IAM user created for AFR."
+    Value: !Ref AfrUser
+
+  AccessKeyId:
+    Description: "IAM Access Key ID (store it)."
+    Value: !Ref AfrAccessKey
+
+  SecretAccessKey:
+    Description: "IAM Secret Access Key (shown only here). Save it now."
+    Value: !GetAtt AfrAccessKey.SecretAccessKey

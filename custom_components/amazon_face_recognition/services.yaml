@@ -1,10 +1,10 @@
 scan:
   name: Scan
-  description: Esegue la scansione Rekognition sulla camera indicata (snapshot in memoria).
+  description: Runs a Rekognition scan on the selected camera (in-memory snapshot).
   fields:
     entity_id:
       name: Camera
-      description: Entità camera da cui prendere lo snapshot.
+      description: Camera entity from which the snapshot is taken.
       required: true
       selector:
         entity:
@@ -12,24 +12,24 @@ scan:
 
 index_face:
   name: Index face
-  description: Indicizza un volto nella collection AWS usando un file locale.
+  description: Indexes a face into the AWS collection using a local image file.
   fields:
     file:
       name: File
-      description: Percorso COMPLETO del file immagine (es. /config/www/.../mattia_01.jpg).
+      description: FULL path to the image file (e.g. /config/www/.../mattia_01.jpg).
       required: true
       selector:
         text:
     name:
       name: Name
-      description: Nome persona da associare al volto (ExternalImageId).
+      description: Person name associated with the face (ExternalImageId).
       required: true
       selector:
         text:
 
 delete_face_by_id:
-  name: Delete face by id
-  description: Elimina un volto dalla collection tramite FaceId.
+  name: Delete face by ID
+  description: Deletes a face from the collection using its FaceId.
   fields:
     face_id:
       name: Face ID
@@ -39,7 +39,7 @@ delete_face_by_id:
 
 delete_faces_by_name:
   name: Delete faces by name
-  description: Elimina tutti i volti associati a un nome (ExternalImageId).
+  description: Deletes all faces associated with a name (ExternalImageId).
   fields:
     name:
       name: Name
@@ -49,16 +49,16 @@ delete_faces_by_name:
 
 delete_all_faces:
   name: Delete all faces
-  description: Elimina tutti i volti dalla collection.
+  description: Deletes all faces from the collection.
   fields: {}
 
 aws_selftest:
-  name: AWS selftest
+  name: AWS self-test
   description: Runs a quick AWS connectivity test (STS + Rekognition + optional S3).
   fields:
     entry_id:
       name: Entry ID
-      description: Optional config entry id (only needed if you have multiple AFR entries).
+      description: Optional config entry ID (only required if multiple AFR entries are configured).
       example: "abcd1234efgh5678"
       required: false
       selector:
