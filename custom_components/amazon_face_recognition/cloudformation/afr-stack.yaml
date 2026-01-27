@@ -23,15 +23,6 @@ Resources:
         BlockPublicPolicy: true
         RestrictPublicBuckets: true
 
-  # (Optional but nice) explicit public access block resource; the above is usually enough.
-  AfrBucketPublicAccessBlock:
-    Type: AWS::S3::BucketPublicAccessBlock
-    Properties:
-      Bucket: !Ref AfrBucket
-      BlockPublicAcls: true
-      IgnorePublicAcls: true
-      BlockPublicPolicy: true
-      RestrictPublicBuckets: true
 
   AfrUser:
     Type: AWS::IAM::User
